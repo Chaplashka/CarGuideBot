@@ -97,10 +97,17 @@
 </head>
 <body>
     <div class="card">
-        <h2>Купить автомобиль</h2>
+        <h2>Купить транспорт</h2>
+        <label for="vehicleType">Тип транспорта</label>
+        <select id="vehicleType">
+            <option value="">Выберите тип</option>
+            <option value="PASSENGER_CAR_DATA">Легковой автомобиль</option>
+            <option value="COMMERCIAL_VEHICLE_DATA">Коммерческий транспорт</option>
+        </select>
+
         <label for="brand">Марка</label>
-        <select id="brand">
-            <option value="">Загрузка...</option>
+        <select id="brand" disabled>
+            <option value="">Сначала выберите тип</option>
         </select>
         <label for="model">Модель</label>
         <select id="model" disabled>
@@ -113,7 +120,9 @@
         <button onclick="sendData()">Отправить</button>
     </div>
     <script>
+        let allData = {};
         let carData = {};
+        const vehicleTypeSelect = document.getElementById('vehicleType');
         const brandSelect = document.getElementById('brand');
         const modelSelect = document.getElementById('model');
         const genSelect = document.getElementById('generation');
@@ -122,25 +131,37 @@
         fetch(DATA_URL)
             .then(response => response.json())
             .then(data => {
-                carData = data.PASSENGER_CAR_DATA;
-                brandSelect.innerHTML = '<option value="">Выберите марку</option>';
-                Object.keys(carData).forEach(brand => {
-                    let opt = document.createElement('option');
-                    opt.value = brand;
-                    opt.innerText = brand;
-                    brandSelect.appendChild(opt);
-                });
-                brandSelect.disabled = false;
+                allData = data;
+                vehicleTypeSelect.disabled = false;
             })
             .catch(e => {
                 alert('Ошибка загрузки данных: ' + e);
             });
 
+        vehicleTypeSelect.addEventListener('change', function() {
+            const type = this.value;
+            carData = allData[type] || {};
+            // Очистка
+            brandSelect.innerHTML = '<option value="">Выберите марку</option>';
+            brandSelect.disabled = !type;
+            modelSelect.innerHTML = '<option value="">Сначала выберите марку</option>';
+            modelSelect.disabled = true;
+            genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
+            genSelect.disabled = true;
+            if (!type) return;
+            Object.keys(carData).forEach(brand => {
+                let opt = document.createElement('option');
+                opt.value = brand;
+                opt.innerText = brand;
+                brandSelect.appendChild(opt);
+            });
+        });
+
         brandSelect.addEventListener('change', function() {
             const brand = this.value;
             modelSelect.innerHTML = '<option value="">Выберите модель</option>';
-            genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
             modelSelect.disabled = !brand;
+            genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
             genSelect.disabled = true;
             if (!brand) return;
             const models = carData[brand] || {};
@@ -168,14 +189,15 @@
         });
 
         function sendData() {
+            const type = vehicleTypeSelect.value;
             const brand = brandSelect.value;
             const model = modelSelect.value;
             const generation = genSelect.value;
-            if (!brand || !model || !generation) {
+            if (!type || !brand || !model || !generation) {
                 alert('Пожалуйста, выберите все параметры!');
                 return;
             }
-            const data = { brand, model, generation };
+            const data = { type, brand, model, generation };
             Telegram.WebApp.sendData(JSON.stringify(data));
         }
     </script>
