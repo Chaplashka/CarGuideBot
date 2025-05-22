@@ -4,19 +4,87 @@
     <meta charset="utf-8">
     <title>Купить авто</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 24px; }
+        h2 { margin-bottom: 16px; }
+        select, button { font-size: 18px; margin-bottom: 14px; width: 100%; padding: 6px;}
+        label { font-size: 16px; margin-top: 8px; display: block; }
+    </style>
 </head>
 <body>
-    <h2>Купить авто</h2>
-    <input id="brand" placeholder="Марка авто"><br>
-    <input id="model" placeholder="Модель"><br>
+    <h2>Выберите автомобиль</h2>
+    <label for="brand">Марка</label>
+    <select id="brand">
+        <option value="">Загрузка...</option>
+    </select>
+    <label for="model">Модель</label>
+    <select id="model">
+        <option value="">Сначала выберите марку</option>
+    </select>
+    <label for="generation">Поколение</label>
+    <select id="generation">
+        <option value="">Сначала выберите модель</option>
+    </select>
+    <br>
     <button onclick="sendData()">Отправить</button>
+
     <script>
+        let carData = {};
+
+        // ВСТАВЬ СЮДА СВОЮ ССЫЛКУ НА car_data.json!
+        const DATA_URL = 'https://artemsidorov.github.io/car-bot-miniapp/car_data.json';
+
+        fetch(DATA_URL)
+            .then(response => response.json())
+            .then(data => {
+                carData = data.PASSENGER_CAR_DATA;
+                const brandSelect = document.getElementById('brand');
+                brandSelect.innerHTML = '<option value="">Выберите марку</option>';
+                Object.keys(carData).forEach(brand => {
+                    let opt = document.createElement('option');
+                    opt.value = brand;
+                    opt.innerText = brand;
+                    brandSelect.appendChild(opt);
+                });
+            });
+
+        document.getElementById('brand').addEventListener('change', function() {
+            const brand = this.value;
+            const models = carData[brand] || {};
+            const modelSelect = document.getElementById('model');
+            modelSelect.innerHTML = '<option value="">Выберите модель</option>';
+            document.getElementById('generation').innerHTML = '<option value="">Выберите поколение</option>';
+            Object.keys(models).forEach(model => {
+                let opt = document.createElement('option');
+                opt.value = model;
+                opt.innerText = model;
+                modelSelect.appendChild(opt);
+            });
+        });
+
+        document.getElementById('model').addEventListener('change', function() {
+            const brand = document.getElementById('brand').value;
+            const model = this.value;
+            const generations = carData[brand] && carData[brand][model] ? carData[brand][model] : [];
+            const genSelect = document.getElementById('generation');
+            genSelect.innerHTML = '<option value="">Выберите поколение</option>';
+            generations.forEach(generation => {
+                let opt = document.createElement('option');
+                opt.value = generation;
+                opt.innerText = generation;
+                genSelect.appendChild(opt);
+            });
+        });
+
         function sendData() {
-            const data = {
-                action: "buy",
-                brand: document.getElementById('brand').value,
-                model: document.getElementById('model').value
-            };
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const generation = document.getElementById('generation').value;
+            if (!brand || !model || !generation) {
+                alert('Пожалуйста, выберите все параметры!');
+                return;
+            }
+            const data = { brand, model, generation };
             Telegram.WebApp.sendData(JSON.stringify(data));
         }
     </script>
