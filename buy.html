@@ -4,42 +4,125 @@
     <meta charset="utf-8">
     <title>Купить авто</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; padding: 24px; }
-        h2 { margin-bottom: 16px; }
-        select, button { font-size: 18px; margin-bottom: 14px; width: 100%; padding: 6px;}
-        label { font-size: 16px; margin-top: 8px; display: block; }
+        :root {
+            --accent: #229ED9;
+            --bg: #f7f9fa;
+            --text: #1b1c1d;
+            --card-bg: #fff;
+            --shadow: 0 4px 24px rgba(34,158,217,0.08);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #20232a;
+                --card-bg: #25272e;
+                --text: #f7f9fa;
+                --shadow: 0 4px 24px rgba(34,158,217,0.25);
+            }
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 28px 22px 20px 22px;
+            margin-top: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 28px;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        label {
+            font-size: 1rem;
+            margin-top: 18px;
+            margin-bottom: 4px;
+            display: block;
+            font-weight: 500;
+        }
+        select, button {
+            width: 100%;
+            padding: 12px 10px;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 14px;
+            border: 1.5px solid #e2e4e8;
+            outline: none;
+            box-sizing: border-box;
+        }
+        select:disabled {
+            background: #f2f2f2;
+            color: #a0a0a0;
+        }
+        button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-size: 1.08rem;
+            font-weight: 600;
+            box-shadow: 0 2px 12px rgba(34,158,217,0.13);
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 14px;
+            cursor: pointer;
+        }
+        button:active {
+            background: #0d6ca0;
+            transform: scale(0.97);
+        }
+        @media (max-width: 500px) {
+            .card {
+                margin-top: 12vw;
+                padding: 7vw 4vw 4vw 4vw;
+                border-radius: 18px;
+            }
+            h2 {
+                font-size: 1.16rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>Выберите автомобиль</h2>
-    <label for="brand">Марка</label>
-    <select id="brand">
-        <option value="">Загрузка...</option>
-    </select>
-    <label for="model">Модель</label>
-    <select id="model">
-        <option value="">Сначала выберите марку</option>
-    </select>
-    <label for="generation">Поколение</label>
-    <select id="generation">
-        <option value="">Сначала выберите модель</option>
-    </select>
-    <br>
-    <button onclick="sendData()">Отправить</button>
-
+    <div class="card">
+        <h2>Купить автомобиль</h2>
+        <label for="brand">Марка</label>
+        <select id="brand">
+            <option value="">Загрузка...</option>
+        </select>
+        <label for="model">Модель</label>
+        <select id="model" disabled>
+            <option value="">Сначала выберите марку</option>
+        </select>
+        <label for="generation">Поколение</label>
+        <select id="generation" disabled>
+            <option value="">Сначала выберите модель</option>
+        </select>
+        <button onclick="sendData()">Отправить</button>
+    </div>
     <script>
         let carData = {};
-
-        // Ссылка на твой car_data.json на GitHub Pages!
+        const brandSelect = document.getElementById('brand');
+        const modelSelect = document.getElementById('model');
+        const genSelect = document.getElementById('generation');
         const DATA_URL = 'https://chaplashka.github.io/CarGuideBot/car_data.json';
 
-        // Загрузка данных
         fetch(DATA_URL)
             .then(response => response.json())
             .then(data => {
                 carData = data.PASSENGER_CAR_DATA;
-                const brandSelect = document.getElementById('brand');
                 brandSelect.innerHTML = '<option value="">Выберите марку</option>';
                 Object.keys(carData).forEach(brand => {
                     let opt = document.createElement('option');
@@ -47,18 +130,20 @@
                     opt.innerText = brand;
                     brandSelect.appendChild(opt);
                 });
+                brandSelect.disabled = false;
             })
             .catch(e => {
                 alert('Ошибка загрузки данных: ' + e);
             });
 
-        // При выборе марки подгружаем модели
-        document.getElementById('brand').addEventListener('change', function() {
+        brandSelect.addEventListener('change', function() {
             const brand = this.value;
-            const models = carData[brand] || {};
-            const modelSelect = document.getElementById('model');
             modelSelect.innerHTML = '<option value="">Выберите модель</option>';
-            document.getElementById('generation').innerHTML = '<option value="">Выберите поколение</option>';
+            genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
+            modelSelect.disabled = !brand;
+            genSelect.disabled = true;
+            if (!brand) return;
+            const models = carData[brand] || {};
             Object.keys(models).forEach(model => {
                 let opt = document.createElement('option');
                 opt.value = model;
@@ -67,13 +152,13 @@
             });
         });
 
-        // При выборе модели подгружаем поколения
-        document.getElementById('model').addEventListener('change', function() {
-            const brand = document.getElementById('brand').value;
+        modelSelect.addEventListener('change', function() {
+            const brand = brandSelect.value;
             const model = this.value;
-            const generations = carData[brand] && carData[brand][model] ? carData[brand][model] : [];
-            const genSelect = document.getElementById('generation');
             genSelect.innerHTML = '<option value="">Выберите поколение</option>';
+            genSelect.disabled = !model;
+            if (!model) return;
+            const generations = carData[brand] && carData[brand][model] ? carData[brand][model] : [];
             generations.forEach(generation => {
                 let opt = document.createElement('option');
                 opt.value = generation;
@@ -82,11 +167,10 @@
             });
         });
 
-        // Отправка данных в Telegram
         function sendData() {
-            const brand = document.getElementById('brand').value;
-            const model = document.getElementById('model').value;
-            const generation = document.getElementById('generation').value;
+            const brand = brandSelect.value;
+            const model = modelSelect.value;
+            const generation = genSelect.value;
             if (!brand || !model || !generation) {
                 alert('Пожалуйста, выберите все параметры!');
                 return;
