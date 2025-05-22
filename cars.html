@@ -9,72 +9,73 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background: #181B20 !important;
-            color: #fff !important;
+            background: #a28ef7;
             font-family: 'Montserrat', Arial, sans-serif;
+            box-sizing: border-box;
         }
-        .container {
+        body {
             min-height: 100vh;
+            min-width: 100vw;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
-        .title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: -1px;
-            margin-bottom: 30px;
+        .background-img {
+            position: fixed;
+            z-index: 0;
+            left: 0; top: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: url('649438f4-7577-4eea-8b79-b4edb37fd19b.png') center center / cover no-repeat;
+            opacity: 1;
         }
-        .actions {
+        .menu-container {
+            position: relative;
+            z-index: 2;
+            width: 340px;
+            max-width: 98vw;
+            margin: 0 auto;
+            padding: 40px 0;
             display: flex;
-            gap: 30px;
+            flex-direction: column;
+            gap: 32px;
         }
-        .action-btn {
-            background: linear-gradient(90deg, #396afc 0%, #2948ff 100%);
-            color: #fff;
-            border: none;
-            border-radius: 18px;
-            padding: 20px 54px;
-            font-size: 1.32rem;
-            font-weight: 700;
+        .menu-card {
+            background: rgba(255,255,255,0.75);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(120,120,160,0.20);
+            overflow: hidden;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.13s, box-shadow 0.13s;
             cursor: pointer;
-            box-shadow: 0 4px 20px #396afc40;
-            transition: background 0.15s, transform 0.11s;
         }
-        .action-btn.sell {
-            background: linear-gradient(90deg, #fc6396 0%, #ff7e5f 100%);
-            box-shadow: 0 2px 18px #fc639670;
-        }
-        .action-btn:active {
+        .menu-card:active {
             transform: scale(0.97);
+            box-shadow: 0 2px 18px #396afc40;
         }
-        @media (max-width: 600px) {
-            .container {
-                padding: 0 14px;
-            }
-            .actions {
-                flex-direction: column;
-                gap: 20px;
-                width: 100%;
-            }
-            .action-btn {
-                width: 100%;
-                padding: 17px 0;
-                font-size: 1.04rem;
-            }
-            .title {
-                font-size: 1.4rem;
-            }
+        .menu-card-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #27314e;
+            text-shadow: 0 2px 12px #fff8;
+        }
+        @media (max-width: 500px) {
+            .menu-container { width: 97vw; padding: 18px 0; gap: 18px;}
+            .menu-card { min-height: 86px; }
+            .menu-card-title { font-size: 1.18rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="title">Меню CarGuide</div>
-        <div class="actions">
-            <button class="action-btn" onclick="window.location.href='brands.html'">Купить авто</button>
-            <button class="action-btn sell" onclick="window.location.href='sell.html'">Продать авто</button>
+    <div class="background-img"></div>
+    <div class="menu-container">
+        <div class="menu-card" onclick="window.location.href='buy.html'">
+            <div class="menu-card-title">Купить авто</div>
+        </div>
+        <div class="menu-card" onclick="window.location.href='sell.html'">
+            <div class="menu-card-title">Продать авто</div>
         </div>
     </div>
 </body>
