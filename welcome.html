@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Добро пожаловать!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #181B20;
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0; padding: 0;
+        }
+        .welcome-container {
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 0 10px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .welcome-img {
+            margin-bottom: 32px;
+        }
+        .welcome-img img {
+            width: 260px;
+            max-width: 90vw;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #12121260;
+        }
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .welcome-desc {
+            font-size: 1.12rem;
+            opacity: 0.87;
+            margin-bottom: 34px;
+        }
+        .welcome-btn {
+            background: linear-gradient(90deg, #396afc 0%, #2948ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            padding: 17px 0;
+            width: 100%;
+            max-width: 320px;
+            font-size: 1.22rem;
+            font-weight: 600;
+            box-shadow: 0 2px 18px #396afc70;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.12s;
+        }
+        .welcome-btn:active {
+            background: #2948ff;
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="welcome-img">
+            <img src="https://cdn.dribbble.com/users/32512/screenshots/13207502/media/fdfa20a86315e4b72587e4fd0f99011f.png?compress=1&resize=800x600&vertical=top" alt="Car Welcome">
+        </div>
+        <div class="welcome-title">Начнем путешествие!</div>
+        <div class="welcome-desc">
+            Найдите и купите свою идеальную машину в пару кликов.<br>
+            Каталог проверенных авто по всей России.
+        </div>
+        <button class="welcome-btn" onclick="goToApp()">Начать</button>
+    </div>
+    <script>
+        function goToApp() {
+            // Перенаправить на основной каталог (cars.html)
+            window.location.href = "cars.html";
+        }
+    </script>
+</body>
+</html>
