@@ -75,6 +75,14 @@
             .welcome-desc { font-size: 0.98rem;}
         }
     </style>
+    <script>
+        // Автоматический переход через 2 секунды
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                window.location.href = "cars.html"; // или другой файл с меню
+            }, 2000);
+        });
+    </script>
 </head>
 <body>
     <div class="welcome-bg"></div>
@@ -85,8 +93,3 @@
         </div>
         <div class="welcome-title">CarGuide</div>
         <div class="welcome-desc">
-            Купите и продайте машину в пару кликов
-        </div>
-    </div>
-</body>
-</html>
