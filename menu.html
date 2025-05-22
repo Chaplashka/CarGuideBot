@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Меню | CarGuide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;700&display=swap');
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #181B20 !important;
+            color: #fff !important;
+        }
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-bg {
+            position: fixed;
+            z-index: 1;
+            left: 0; top: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: url('https://avatars.mds.yandex.net/i?id=92427a7094ecdeb7be6aaac72a1b98bd_l-5452061-images-thumbs&n=13') center center / cover no-repeat;
+            filter: brightness(0.65);
+        }
+        .menu-content {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-start;
+            padding: 0 0 54px 34px;
+            box-sizing: border-box;
+        }
+        .menu-title {
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            margin-bottom: 28px;
+            line-height: 1.09;
+            letter-spacing: -1px;
+            color: #fff;
+            text-shadow: 0 6px 24px #0006, 0 1px 2px #222b;
+        }
+        .button-row {
+            display: flex;
+            flex-direction: row;
+            gap: 18px;
+            margin-top: 8px;
+        }
+        .main-btn {
+            background: linear-gradient(90deg,#396afc 0%,#2948ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 17px 44px;
+            font-size: 1.22rem;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: 700;
+            box-shadow: 0 2px 18px #396afc60;
+            cursor: pointer;
+            transition: background 0.14s, transform 0.14s;
+            margin-right: 0;
+        }
+        .main-btn.sell {
+            background: linear-gradient(90deg,#fc6396 0%,#ff7e5f 100%);
+            box-shadow: 0 2px 18px #fc639670;
+            margin-left: 0;
+        }
+        .main-btn:active {
+            transform: scale(0.97);
+        }
+        @media (max-width: 480px) {
+            .menu-content {
+                padding: 0 0 36px 16px;
+            }
+            .menu-title { font-size: 1.6rem; }
+            .button-row {
+                flex-direction: column;
+                gap: 14px;
+                width: 94vw;
+                max-width: 350px;
+            }
+            .main-btn { width: 100%; min-width: 0; padding: 15px 0; font-size: 1.04rem;}
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-bg"></div>
+    <div class="menu-content">
+        <div class="menu-title">CarGuide<br>Быстро купить или продать машину</div>
+        <div class="button-row">
+            <button class="main-btn" onclick="window.location.href='buy.html'">Купить</button>
+            <button class="main-btn sell" onclick="window.location.href='sell.html'">Продать</button>
+        </div>
+    </div>
+</body>
+</html>
