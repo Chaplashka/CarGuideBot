@@ -1,260 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <title>CarGuideBot Каталог</title>
+    <meta charset="UTF-8">
+    <title>Выбор марки | CarGuide</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            background: #f8f9fb;
-            color: #23262f;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #181B20;
+            color: #fff;
+            font-family: 'Montserrat', 'Inter', Arial, sans-serif;
             margin: 0; padding: 0;
         }
         .container {
-            max-width: 440px;
+            max-width: 430px;
             margin: 0 auto;
-            padding: 0 10px;
+            padding: 22px 10px 0 10px;
         }
-        .header {
+        .brands-title {
+            font-size: 1.24rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            margin-left: 2px;
+            letter-spacing: 0.04em;
+        }
+        .brands-list {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px 0 10px 0;
+            flex-wrap: wrap;
+            gap: 26px 32px;
+            justify-content: flex-start;
+            margin-bottom: 40px;
         }
-        .profile-img {
-            width: 34px;
-            height: 34px;
+        .brand-circle {
+            width: 66px;
+            height: 66px;
+            background: #22242c;
             border-radius: 50%;
-            background: #e6eaf1;
-        }
-        .search-row {
+            box-shadow: 0 2px 10px #0e1116a1;
             display: flex;
-            margin-bottom: 22px;
-            gap: 10px;
-        }
-        .search-inp {
-            flex: 1;
-            border: 1.5px solid #e0e3ea;
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 1rem;
-            background: #fff;
-            outline: none;
-        }
-        .search-btn {
-            background: #23262f;
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 0 16px;
-            font-size: 1.22rem;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+            transition: background 0.14s, box-shadow 0.14s;
+            margin-bottom: 7px;
         }
-        .brands-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 24px;
-            overflow-x: auto;
-        }
-        .brand-tile {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 2px 10px 0 #e2e5f170;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 8px 14px;
-            min-width: 66px;
-            cursor: pointer;
-            transition: box-shadow 0.12s;
-        }
-        .brand-tile.selected, .brand-tile:hover {
-            box-shadow: 0 6px 20px 0 #b7d4ff50;
+        .brand-circle:hover, .brand-circle:active {
+            background: #24253a;
+            box-shadow: 0 4px 18px #3d70ff66;
         }
         .brand-logo {
-            width: 32px; height: 32px; margin-bottom: 5px;
+            width: 34px;
+            height: 34px;
             object-fit: contain;
+            margin-bottom: 5px;
         }
         .brand-name {
-            font-size: 0.95rem;
-            color: #1d2229;
-            opacity: 0.82;
-        }
-        .cars-list {
-            margin-bottom: 30px;
-        }
-        .car-card {
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 4px 24px 0 #e0e3ea55;
-            padding: 18px 16px;
-            display: flex;
-            gap: 16px;
-            color: #222;
-            margin-bottom: 18px;
-            align-items: center;
-        }
-        .car-img img {
-            width: 88px;
-            height: 56px;
-            object-fit: cover;
-            border-radius: 12px;
-            background: #f0f2f7;
-        }
-        .car-info { flex: 1; }
-        .car-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        .car-meta {
-            margin-top: 8px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
+            text-align: center;
             font-size: 0.97rem;
-        }
-        .car-price {
-            font-weight: 600; color: #23262f; font-size: 1.07rem;
-        }
-        .car-btn {
-            background: #23262f;
+            margin-top: 0px;
+            opacity: 0.93;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: 600;
             color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 15px;
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 0.98rem;
-            margin-left: 8px;
-            transition: background 0.16s;
-        }
-        .car-btn:active { background: #344058; }
-        .car-rating {
-            color: #ffaa1b;
-            margin-right: 4px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div>📍 Ваш город</div>
-            <div class="profile-img"></div>
-        </div>
-        <div class="search-row">
-            <input class="search-inp" placeholder="Поиск по модели или марке" id="searchInp">
-            <button class="search-btn" id="searchBtn">🔍</button>
-        </div>
-        <div class="brands-row" id="brandsRow">
-            <!-- Бренды авто -->
-        </div>
-        <div class="cars-list" id="carsList">
-            <!-- Карточки авто -->
+        <div class="brands-title">Выберите марку автомобиля</div>
+        <div class="brands-list" id="brandsList">
+            <!-- Тут будут кружки марок -->
         </div>
     </div>
     <script>
-        // Привязка лого брендов (можно расширить по необходимости)
+        // Привязка логотипов к маркам (можно добавить свои)
         const BRAND_LOGOS = {
             "Mercedes": "https://cdn.iconscout.com/icon/free/png-256/mercedes-benz-2-202836.png",
             "Audi": "https://cdn.iconscout.com/icon/free/png-256/audi-6-202739.png",
             "Tesla": "https://cdn.iconscout.com/icon/free/png-256/tesla-11-202766.png",
             "Nissan": "https://cdn.iconscout.com/icon/free/png-256/nissan-10-202770.png",
-            "Ferrari": "https://cdn.iconscout.com/icon/free/png-256/ferrari-10-202699.png"
+            "Ferrari": "https://cdn.iconscout.com/icon/free/png-256/ferrari-10-202699.png",
+            "Toyota": "https://cdn.iconscout.com/icon/free/png-256/toyota-13-202760.png",
+            "Kia": "https://cdn.iconscout.com/icon/free/png-256/kia-4-202718.png",
+            "BMW": "https://cdn.iconscout.com/icon/free/png-256/bmw-14-202741.png",
+            "Volvo": "https://cdn.iconscout.com/icon/free/png-256/volvo-6-202794.png",
+            "Bugatti": "https://cdn.iconscout.com/icon/free/png-256/bugatti-202838.png",
+            "Honda": "https://cdn.iconscout.com/icon/free/png-256/honda-12-202761.png",
+            // ...добавить нужные бренды (или использовать свою логику)
         };
-        // Заглушка для фото авто
-        const PLACEHOLDER_IMG = "https://cdn-icons-png.flaticon.com/512/854/854866.png";
-        // Примерный массив фото (под каждую марку можно прописать свой URL)
-        const CAR_PHOTOS = {
-            "Tesla": "https://pngimg.com/uploads/tesla_model_s/tesla_model_s_PNG12.png",
-            "BMW": "https://pngimg.com/uploads/bmw/bmw_PNG99507.png",
-            "Audi": "https://pngimg.com/uploads/audi/audi_PNG1769.png",
-            "Kia": "https://pngimg.com/uploads/kia/kia_PNG10230.png",
-            "Mercedes-Benz": "https://pngimg.com/uploads/mercedes/mercedes_PNG80169.png"
-        };
+        // Заглушка, если логотип не найден
+        const PLACEHOLDER_LOGO = "https://cdn-icons-png.flaticon.com/512/854/854866.png";
 
-        // Получение и отрисовка реальных данных
-        let allCars = []; // Все авто
-        let uniqueBrands = []; // Для Trending Brands
-
+        // Получаем список марок из твоего json
         fetch('https://chaplashka.github.io/CarGuideBot/car_data.json')
-            .then(r=>r.json())
-            .then(data=>{
-                // Извлекаем легковые авто (PASSENGER_CAR_DATA)
-                const pcars = data.PASSENGER_CAR_DATA;
-                allCars = [];
-                uniqueBrands = [];
-                Object.keys(pcars).forEach(brand=>{
-                    if (!uniqueBrands.includes(brand)) uniqueBrands.push(brand);
-                    Object.keys(pcars[brand]).forEach(model=>{
-                        (pcars[brand][model]||[]).forEach(gen=>{
-                            allCars.push({
-                                brand: brand,
-                                model: model,
-                                generation: gen,
-                                year: '', // Можно вытянуть если есть
-                                price: Math.floor(Math.random()*30)*50+200, // Рандомная цена для примера
-                                img: CAR_PHOTOS[brand] || PLACEHOLDER_IMG,
-                                rating: (Math.random()*1+4).toFixed(1),
-                                reviews: Math.floor(Math.random()*80+20)
-                            });
-                        });
-                    });
+            .then(r => r.json())
+            .then(data => {
+                // Например, только легковые авто (PASSENGER_CAR_DATA)
+                const pcars = data.PASSENGER_CAR_DATA || data;
+                const brands = Object.keys(pcars);
+
+                const list = document.getElementById('brandsList');
+                list.innerHTML = "";
+                brands.forEach(brand => {
+                    let logo = BRAND_LOGOS[brand] || PLACEHOLDER_LOGO;
+                    list.innerHTML += `
+                        <div class="brand-circle" onclick="selectBrand('${brand}')">
+                            <img class="brand-logo" src="${logo}" alt="${brand}">
+                        </div>
+                        <div class="brand-name">${brand}</div>
+                    `;
                 });
-                renderBrands();
-                renderCars();
             });
 
-        // Отрисовка брендов-плиток
-        function renderBrands() {
-            const row = document.getElementById('brandsRow');
-            row.innerHTML = "";
-            uniqueBrands.slice(0,7).forEach(brand=>{
-                let logo = BRAND_LOGOS[brand] || PLACEHOLDER_IMG;
-                row.innerHTML += `
-                <div class="brand-tile" onclick="filterBrand('${brand}')">
-                    <img class="brand-logo" src="${logo}">
-                    <div class="brand-name">${brand}</div>
-                </div>
-                `;
-            });
-        }
-        // Отрисовка карточек авто
-        function renderCars(filtered=allCars) {
-            const list = document.getElementById('carsList');
-            list.innerHTML = "";
-            filtered.forEach(car=>{
-                list.innerHTML += `
-                <div class="car-card">
-                    <div class="car-img">
-                        <img src="${car.img}">
-                    </div>
-                    <div class="car-info">
-                        <div class="car-title">${car.brand} ${car.model} <span style="color:#c7c8cf;">${car.generation||""}</span></div>
-                        <div class="car-meta">
-                            <span class="car-rating">⭐ ${car.rating}</span>
-                            <span style="color:#889;">(${car.reviews})</span>
-                        </div>
-                        <div class="car-meta">
-                            <span class="car-price">${car.price}₽/День</span>
-                            <button class="car-btn">Купить</button>
-                        </div>
-                    </div>
-                </div>
-                `;
-            });
-        }
-        // Поиск по строке
-        document.getElementById('searchBtn').onclick = ()=>{
-            const q = document.getElementById('searchInp').value.trim().toLowerCase();
-            if (!q) { renderCars(); return; }
-            renderCars(allCars.filter(car=>
-                (car.brand+" "+car.model+" "+car.generation).toLowerCase().includes(q)
-            ));
-        }
-        // Фильтр по бренду
-        function filterBrand(brand) {
-            renderCars(allCars.filter(car=>car.brand===brand));
+        // Функция-обработчик (можно сделать переход к моделям выбранного бренда)
+        function selectBrand(brand) {
+            alert("Вы выбрали: " + brand);
+            // Здесь можно реализовать переход к выбору модели или что угодно
         }
     </script>
 </body>
