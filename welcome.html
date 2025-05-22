@@ -25,8 +25,9 @@
             z-index: 1;
             left: 0; top: 0; right: 0; bottom: 0;
             width: 100vw; height: 100vh;
-            background: url('https://i.pinimg.com/736x/cf/d0/cd/cfd0cd472225b974b5bf59f85c40468b.jpg') center center / cover no-repeat;
+            background: url('https://cdn.7days.ru/pic/b70/340220.jpg') center center / cover no-repeat;
             filter: brightness(0.72);
+            transition: opacity 0.7s cubic-bezier(.77,0,.18,1);
         }
         .welcome-content {
             position: relative;
@@ -38,6 +39,7 @@
             align-items: flex-start;
             padding: 0 0 54px 34px;
             box-sizing: border-box;
+            transition: opacity 0.7s cubic-bezier(.77,0,.18,1), transform 0.7s cubic-bezier(.77,0,.18,1);
         }
         .welcome-title {
             font-family: 'Montserrat', Arial, sans-serif;
@@ -74,12 +76,134 @@
             .welcome-hello { font-size: 1rem;}
             .welcome-desc { font-size: 0.98rem;}
         }
+        /* Эффект скрытия */
+        .hide-welcome {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(30px) scale(0.99);
+        }
     </style>
     <script>
-        // Автоматический переход через 2 секунды
         window.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
-                window.location.href = "cars.html"; // или другой файл с меню
+                document.querySelector('.welcome-bg').classList.add('hide-welcome');
+                document.querySelector('.welcome-content').classList.add('hide-welcome');
+                // Переход к меню через время анимации (0.7s)
+                setTimeout(function() {
+                    window.location.href = "cars.html";
+                }, 700);
+            }, 2000);
+        });
+    </script>
+</head>
+<body>
+    <div class="welcome-bg"></div>
+    <div class="welcome-content">
+        <div class="welcome-hello">
+            Приветствую в
+            <span>👋</span>
+        </div>
+        <div class="welcome-title">CarGuide</div>
+        <div class="welcome-desc">
+            Купите и продайте машину в пару кликов
+        </div>
+    </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome | CarGuide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;700&display=swap');
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #181B20 !important;
+            color: #fff !important;
+        }
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-bg {
+            position: fixed;
+            z-index: 1;
+            left: 0; top: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: url('https://cdn.7days.ru/pic/b70/340220.jpg') center center / cover no-repeat;
+            filter: brightness(0.72);
+            transition: opacity 0.7s cubic-bezier(.77,0,.18,1);
+        }
+        .welcome-content {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-start;
+            padding: 0 0 54px 34px;
+            box-sizing: border-box;
+            transition: opacity 0.7s cubic-bezier(.77,0,.18,1), transform 0.7s cubic-bezier(.77,0,.18,1);
+        }
+        .welcome-title {
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            line-height: 1.06;
+            letter-spacing: -1px;
+        }
+        .welcome-hello {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .welcome-hello span {
+            font-size: 1.5rem;
+            margin-left: 0.6rem;
+        }
+        .welcome-desc {
+            font-size: 1.02rem;
+            font-family: 'Inter', Arial, sans-serif;
+            opacity: 0.97;
+            margin-bottom: 0;
+            margin-top: 16px;
+            max-width: 350px;
+        }
+        @media (max-width: 480px) {
+            .welcome-content {
+                padding: 0 0 36px 18px;
+            }
+            .welcome-title { font-size: 2.2rem; }
+            .welcome-hello { font-size: 1rem;}
+            .welcome-desc { font-size: 0.98rem;}
+        }
+        /* Эффект скрытия */
+        .hide-welcome {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(30px) scale(0.99);
+        }
+    </style>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.querySelector('.welcome-bg').classList.add('hide-welcome');
+                document.querySelector('.welcome-content').classList.add('hide-welcome');
+                // Переход к меню через время анимации (0.9s)
+                setTimeout(function() {
+                    window.location.href = "cars.html";
+                }, 900);
             }, 5000);
         });
     </script>
@@ -93,3 +217,8 @@
         </div>
         <div class="welcome-title">CarGuide</div>
         <div class="welcome-desc">
+            Купите и продайте машину в пару кликов
+        </div>
+    </div>
+</body>
+</html>
