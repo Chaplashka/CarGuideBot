@@ -1,83 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <title>Добро пожаловать!</title>
+    <meta charset="UTF-8">
+    <title>Welcome | CarGuide</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            background: #181B20;
-            color: #fff;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0; padding: 0;
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;700&display=swap');
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
-        .welcome-container {
-            max-width: 430px;
-            margin: 0 auto;
-            padding: 0 10px;
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-bg {
+            position: absolute;
+            z-index: 1;
+            left: 0; top: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('https://cdn.7days.ru/pic/b70/340220.jpg') center center / cover no-repeat;
+            filter: brightness(0.72);
+        }
+        .welcome-content {
+            position: relative;
+            z-index: 2;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .welcome-img {
-            margin-bottom: 32px;
-        }
-        .welcome-img img {
-            width: 260px;
-            max-width: 90vw;
-            border-radius: 18px;
-            box-shadow: 0 4px 24px #12121260;
+            justify-content: flex-end;
+            align-items: flex-start;
+            padding: 0 0 54px 34px;
+            box-sizing: border-box;
         }
         .welcome-title {
-            font-size: 2rem;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            line-height: 1.06;
+            letter-spacing: -0.5px;
+        }
+        .welcome-hello {
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 14px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .welcome-hello span {
+            font-size: 1.5rem;
+            margin-left: 0.6rem;
         }
         .welcome-desc {
-            font-size: 1.12rem;
-            opacity: 0.87;
-            margin-bottom: 34px;
+            font-size: 1.02rem;
+            font-family: 'Inter', Arial, sans-serif;
+            opacity: 0.97;
+            margin-bottom: 0;
+            margin-top: 16px;
+            max-width: 350px;
         }
-        .welcome-btn {
-            background: linear-gradient(90deg, #396afc 0%, #2948ff 100%);
-            color: #fff;
-            border: none;
-            border-radius: 18px;
-            padding: 17px 0;
-            width: 100%;
-            max-width: 320px;
-            font-size: 1.22rem;
-            font-weight: 600;
-            box-shadow: 0 2px 18px #396afc70;
-            cursor: pointer;
-            transition: background 0.15s, transform 0.12s;
-        }
-        .welcome-btn:active {
-            background: #2948ff;
-            transform: scale(0.97);
+        @media (max-width: 480px) {
+            .welcome-content {
+                padding: 0 0 36px 18px;
+            }
+            .welcome-title { font-size: 1.42rem; }
+            .welcome-hello { font-size: 1rem;}
+            .welcome-desc { font-size: 0.98rem;}
         }
     </style>
 </head>
 <body>
-    <div class="welcome-container">
-        <div class="welcome-img">
-            <img src="https://i.pinimg.com/736x/cf/d0/cd/cfd0cd472225b974b5bf59f85c40468b.jpg" alt="Car Welcome">
+    <div class="welcome-bg"></div>
+    <div class="welcome-content">
+        <div class="welcome-hello">
+            Приветствую в
+            <span>👋</span>
         </div>
-        <div class="welcome-title">Начнем путешествие!</div>
+        <div class="welcome-title">CarGuide</div>
         <div class="welcome-desc">
-            Найдите и купите свою идеальную машину в пару кликов.<br>
-            Каталог проверенных авто по всей России.
+            Купите и продайте машину в пару кликов
         </div>
-        <button class="welcome-btn" onclick="goToApp()">Начать</button>
     </div>
-    <script>
-        function goToApp() {
-            // Перенаправить на основной каталог (cars.html)
-            window.location.href = "cars.html";
-        }
-    </script>
 </body>
 </html>
