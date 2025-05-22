@@ -5,13 +5,13 @@
     <title>CarGuide — Меню</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
             background: #a28ef7;
             font-family: 'Montserrat', Arial, sans-serif;
-            box-sizing: border-box;
         }
         body {
             min-height: 100vh;
@@ -20,61 +20,69 @@
             align-items: center;
             justify-content: center;
         }
-        .background-img {
-            position: fixed;
-            z-index: 0;
-            left: 0; top: 0; right: 0; bottom: 0;
-            width: 100vw; height: 100vh;
-            background: url('649438f4-7577-4eea-8b79-b4edb37fd19b.png') center center / cover no-repeat;
-            opacity: 1;
-        }
         .menu-container {
-            position: relative;
-            z-index: 2;
-            width: 340px;
+            width: 370px;
             max-width: 98vw;
             margin: 0 auto;
-            padding: 40px 0;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 24px;
+            z-index: 2;
         }
         .menu-card {
-            background: rgba(255,255,255,0.75);
+            position: relative;
+            background: rgba(255,255,255,0.90);
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(120,120,160,0.20);
-            overflow: hidden;
+            box-shadow: 0 4px 24px 0 #0002;
             min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.13s, box-shadow 0.13s;
             cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            transition: box-shadow 0.13s, transform 0.13s;
         }
         .menu-card:active {
-            transform: scale(0.97);
-            box-shadow: 0 2px 18px #396afc40;
+            box-shadow: 0 1px 8px 0 #9995;
+            transform: scale(0.98);
+        }
+        .menu-card-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.76;
+            transition: opacity 0.2s;
         }
         .menu-card-title {
-            font-size: 2rem;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 30px 22px 18px 22px;
+            font-size: 2.0rem;
             font-weight: 800;
-            color: #27314e;
-            text-shadow: 0 2px 12px #fff8;
+            color: #232e50;
+            text-shadow: 0 3px 14px #fff7, 0 1px 2px #2222;
+            text-align: left;
+            letter-spacing: -1px;
         }
         @media (max-width: 500px) {
-            .menu-container { width: 97vw; padding: 18px 0; gap: 18px;}
-            .menu-card { min-height: 86px; }
-            .menu-card-title { font-size: 1.18rem; }
+            .menu-container { width: 97vw; gap: 14px;}
+            .menu-card { min-height: 76px;}
+            .menu-card-title { font-size: 1.12rem; padding: 18px 12px 12px 16px;}
         }
     </style>
 </head>
 <body>
-    <div class="background-img"></div>
     <div class="menu-container">
+        <!-- Карточка Купить авто -->
         <div class="menu-card" onclick="window.location.href='buy.html'">
+            <img class="menu-card-bg" src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=800&q=80" alt="Купить авто">
             <div class="menu-card-title">Купить авто</div>
         </div>
+        <!-- Карточка Продать авто -->
         <div class="menu-card" onclick="window.location.href='sell.html'">
+            <img class="menu-card-bg" src="https://images.unsplash.com/photo-1461632830798-3adb3034e4c8?auto=format&fit=crop&w=800&q=80" alt="Продать авто">
             <div class="menu-card-title">Продать авто</div>
         </div>
     </div>
