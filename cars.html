@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CarGuide — Меню</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #181B20 !important;
+            color: #fff !important;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 30px;
+        }
+        .actions {
+            display: flex;
+            gap: 30px;
+        }
+        .action-btn {
+            background: linear-gradient(90deg, #396afc 0%, #2948ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            padding: 20px 54px;
+            font-size: 1.32rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px #396afc40;
+            transition: background 0.15s, transform 0.11s;
+        }
+        .action-btn.sell {
+            background: linear-gradient(90deg, #fc6396 0%, #ff7e5f 100%);
+            box-shadow: 0 2px 18px #fc639670;
+        }
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 14px;
+            }
+            .actions {
+                flex-direction: column;
+                gap: 20px;
+                width: 100%;
+            }
+            .action-btn {
+                width: 100%;
+                padding: 17px 0;
+                font-size: 1.04rem;
+            }
+            .title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Меню CarGuide</div>
+        <div class="actions">
+            <button class="action-btn" onclick="window.location.href='brands.html'">Купить авто</button>
+            <button class="action-btn sell" onclick="window.location.href='sell.html'">Продать авто</button>
+        </div>
+    </div>
+</body>
+</html>
