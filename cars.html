@@ -66,9 +66,14 @@
             padding: 8px 14px;
             min-width: 66px;
             cursor: pointer;
+            transition: box-shadow 0.12s;
+        }
+        .brand-tile.selected, .brand-tile:hover {
+            box-shadow: 0 6px 20px 0 #b7d4ff50;
         }
         .brand-logo {
             width: 32px; height: 32px; margin-bottom: 5px;
+            object-fit: contain;
         }
         .brand-name {
             font-size: 0.95rem;
@@ -102,19 +107,15 @@
             font-weight: 600;
             margin-bottom: 6px;
         }
-        .car-props {
-            font-size: 0.96rem;
-            color: #697387;
-        }
         .car-meta {
             margin-top: 8px;
             display: flex;
             gap: 10px;
             align-items: center;
-            font-size: 0.96rem;
+            font-size: 0.97rem;
         }
         .car-price {
-            font-weight: 600; color: #23262f; font-size: 1.1rem;
+            font-weight: 600; color: #23262f; font-size: 1.07rem;
         }
         .car-btn {
             background: #23262f;
@@ -129,17 +130,21 @@
             transition: background 0.16s;
         }
         .car-btn:active { background: #344058; }
+        .car-rating {
+            color: #ffaa1b;
+            margin-right: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div>📍 California, US</div>
+            <div>📍 Ваш город</div>
             <div class="profile-img"></div>
         </div>
         <div class="search-row">
-            <input class="search-inp" placeholder="Find your car">
-            <button class="search-btn">🔍</button>
+            <input class="search-inp" placeholder="Поиск по модели или марке" id="searchInp">
+            <button class="search-btn" id="searchBtn">🔍</button>
         </div>
         <div class="brands-row" id="brandsRow">
             <!-- Бренды авто -->
@@ -149,66 +154,108 @@
         </div>
     </div>
     <script>
-        // Массив брендов для примера
-        const brands = [
-            {name: "Mercedes", logo: "https://cdn.iconscout.com/icon/free/png-256/mercedes-benz-2-202836.png"},
-            {name: "Audi", logo: "https://cdn.iconscout.com/icon/free/png-256/audi-6-202739.png"},
-            {name: "Tesla", logo: "https://cdn.iconscout.com/icon/free/png-256/tesla-11-202766.png"},
-            {name: "Nissan", logo: "https://cdn.iconscout.com/icon/free/png-256/nissan-10-202770.png"},
-            {name: "Ferrari", logo: "https://cdn.iconscout.com/icon/free/png-256/ferrari-10-202699.png"},
-        ];
-        // Массив авто для примера
-        const cars = [
-            {
-                brand: "Maruti",
-                model: "Alto",
-                price: 450,
-                year: 2020,
-                img: "https://pngimg.com/uploads/suzuki/suzuki_PNG56.png",
-                rating: 4.9,
-                reviews: 110,
-            },
-            {
-                brand: "BMW",
-                model: "Cabrio",
-                price: 425,
-                year: 2022,
-                img: "https://pngimg.com/uploads/bmw/bmw_PNG99814.png",
-                rating: 4.8,
-                reviews: 54,
-            }
-        ];
-        // Отрисовка брендов
-        brands.forEach(b => {
-            brandsRow.innerHTML += `
-                <div class="brand-tile">
-                    <img class="brand-logo" src="${b.logo}">
-                    <div class="brand-name">${b.name}</div>
+        // Привязка лого брендов (можно расширить по необходимости)
+        const BRAND_LOGOS = {
+            "Mercedes": "https://cdn.iconscout.com/icon/free/png-256/mercedes-benz-2-202836.png",
+            "Audi": "https://cdn.iconscout.com/icon/free/png-256/audi-6-202739.png",
+            "Tesla": "https://cdn.iconscout.com/icon/free/png-256/tesla-11-202766.png",
+            "Nissan": "https://cdn.iconscout.com/icon/free/png-256/nissan-10-202770.png",
+            "Ferrari": "https://cdn.iconscout.com/icon/free/png-256/ferrari-10-202699.png"
+        };
+        // Заглушка для фото авто
+        const PLACEHOLDER_IMG = "https://cdn-icons-png.flaticon.com/512/854/854866.png";
+        // Примерный массив фото (под каждую марку можно прописать свой URL)
+        const CAR_PHOTOS = {
+            "Tesla": "https://pngimg.com/uploads/tesla_model_s/tesla_model_s_PNG12.png",
+            "BMW": "https://pngimg.com/uploads/bmw/bmw_PNG99507.png",
+            "Audi": "https://pngimg.com/uploads/audi/audi_PNG1769.png",
+            "Kia": "https://pngimg.com/uploads/kia/kia_PNG10230.png",
+            "Mercedes-Benz": "https://pngimg.com/uploads/mercedes/mercedes_PNG80169.png"
+        };
+
+        // Получение и отрисовка реальных данных
+        let allCars = []; // Все авто
+        let uniqueBrands = []; // Для Trending Brands
+
+        fetch('https://chaplashka.github.io/CarGuideBot/car_data.json')
+            .then(r=>r.json())
+            .then(data=>{
+                // Извлекаем легковые авто (PASSENGER_CAR_DATA)
+                const pcars = data.PASSENGER_CAR_DATA;
+                allCars = [];
+                uniqueBrands = [];
+                Object.keys(pcars).forEach(brand=>{
+                    if (!uniqueBrands.includes(brand)) uniqueBrands.push(brand);
+                    Object.keys(pcars[brand]).forEach(model=>{
+                        (pcars[brand][model]||[]).forEach(gen=>{
+                            allCars.push({
+                                brand: brand,
+                                model: model,
+                                generation: gen,
+                                year: '', // Можно вытянуть если есть
+                                price: Math.floor(Math.random()*30)*50+200, // Рандомная цена для примера
+                                img: CAR_PHOTOS[brand] || PLACEHOLDER_IMG,
+                                rating: (Math.random()*1+4).toFixed(1),
+                                reviews: Math.floor(Math.random()*80+20)
+                            });
+                        });
+                    });
+                });
+                renderBrands();
+                renderCars();
+            });
+
+        // Отрисовка брендов-плиток
+        function renderBrands() {
+            const row = document.getElementById('brandsRow');
+            row.innerHTML = "";
+            uniqueBrands.slice(0,7).forEach(brand=>{
+                let logo = BRAND_LOGOS[brand] || PLACEHOLDER_IMG;
+                row.innerHTML += `
+                <div class="brand-tile" onclick="filterBrand('${brand}')">
+                    <img class="brand-logo" src="${logo}">
+                    <div class="brand-name">${brand}</div>
                 </div>
-            `;
-        });
-        // Отрисовка авто
-        cars.forEach(car => {
-            carsList.innerHTML += `
+                `;
+            });
+        }
+        // Отрисовка карточек авто
+        function renderCars(filtered=allCars) {
+            const list = document.getElementById('carsList');
+            list.innerHTML = "";
+            filtered.forEach(car=>{
+                list.innerHTML += `
                 <div class="car-card">
                     <div class="car-img">
                         <img src="${car.img}">
                     </div>
                     <div class="car-info">
-                        <div class="car-title">${car.brand} ${car.model} <span style="color:#c7c8cf;">${car.year||""}</span></div>
+                        <div class="car-title">${car.brand} ${car.model} <span style="color:#c7c8cf;">${car.generation||""}</span></div>
                         <div class="car-meta">
-                            <span style="color:#ffaa1b;">⭐ ${car.rating}</span>
+                            <span class="car-rating">⭐ ${car.rating}</span>
                             <span style="color:#889;">(${car.reviews})</span>
                         </div>
-                        <div class="car-props"></div>
                         <div class="car-meta">
-                            <span class="car-price">$${car.price}/Day</span>
-                            <button class="car-btn">Rent Now</button>
+                            <span class="car-price">${car.price}₽/День</span>
+                            <button class="car-btn">Купить</button>
                         </div>
                     </div>
                 </div>
-            `;
-        });
+                `;
+            });
+        }
+        // Поиск по строке
+        document.getElementById('searchBtn').onclick = ()=>{
+            const q = document.getElementById('searchInp').value.trim().toLowerCase();
+            if (!q) { renderCars(); return; }
+            renderCars(allCars.filter(car=>
+                (car.brand+" "+car.model+" "+car.generation).toLowerCase().includes(q)
+            ));
+        }
+        // Фильтр по бренду
+        function filterBrand(brand) {
+            renderCars(allCars.filter(car=>car.brand===brand));
+        }
     </script>
 </body>
 </html>
