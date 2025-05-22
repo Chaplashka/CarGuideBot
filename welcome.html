@@ -10,29 +10,22 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            background: #181B20 !important;
+            color: #fff !important;
         }
-        <script>
-    // Через 3 секунды автоматически открыть меню
-    setTimeout(function() {
-        window.location.href = "cars.html";
-    }, 2000); // 2000 мс = 3 секунды
-</script>
         body {
             min-height: 100vh;
             min-width: 100vw;
-            box-sizing: border-box;
             font-family: 'Montserrat', 'Inter', Arial, sans-serif;
-            color: #fff;
             position: relative;
             overflow: hidden;
         }
         .welcome-bg {
-            position: absolute;
+            position: fixed;
             z-index: 1;
             left: 0; top: 0; right: 0; bottom: 0;
-            width: 100vw;
-            height: 100vh;
-            background: url('https://i.pinimg.com/736x/cf/d0/cd/cfd0cd472225b974b5bf59f85c40468b.jpg') center center / cover no-repeat;
+            width: 100vw; height: 100vh;
+            background: url('https://cdn.7days.ru/pic/b70/340220.jpg') center center / cover no-repeat;
             filter: brightness(0.72);
         }
         .welcome-content {
@@ -52,7 +45,7 @@
             font-weight: 900;
             margin-bottom: 10px;
             line-height: 1.06;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
         }
         .welcome-hello {
             font-size: 1.4rem;
