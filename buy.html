@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Купить авто</title>
+    <title>Купить транспорт</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -96,110 +96,208 @@
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Купить транспорт</h2>
-        <label for="vehicleType">Тип транспорта</label>
-        <select id="vehicleType">
-            <option value="">Выберите тип</option>
-            <option value="PASSENGER_CAR_DATA">Легковой автомобиль</option>
-            <option value="COMMERCIAL_VEHICLE_DATA">Коммерческий транспорт</option>
-        </select>
+<div class="card">
+    <h2>Купить транспорт</h2>
+    <label for="vehicleType">Тип транспорта</label>
+    <select id="vehicleType">
+        <option value="">Выберите тип</option>
+        <option value="PASSENGER_CAR_DATA">Легковой автомобиль</option>
+        <option value="COMMERCIAL_VEHICLE_DATA">Коммерческий транспорт</option>
+    </select>
 
-        <label for="brand">Марка</label>
-        <select id="brand" disabled>
+    <div id="commercial-fields" style="display: none;">
+        <label for="commercialCategory">Вид транспорта</label>
+        <select id="commercialCategory" disabled>
             <option value="">Сначала выберите тип</option>
         </select>
-        <label for="model">Модель</label>
-        <select id="model" disabled>
-            <option value="">Сначала выберите марку</option>
-        </select>
+    </div>
+
+    <label for="brand">Марка</label>
+    <select id="brand" disabled>
+        <option value="">Сначала выберите тип</option>
+    </select>
+    <label for="model">Модель</label>
+    <select id="model" disabled>
+        <option value="">Сначала выберите марку</option>
+    </select>
+    <div id="generation-fields">
         <label for="generation">Поколение</label>
         <select id="generation" disabled>
             <option value="">Сначала выберите модель</option>
         </select>
-        <button onclick="sendData()">Отправить</button>
     </div>
-    <script>
-        let allData = {};
-        let carData = {};
-        const vehicleTypeSelect = document.getElementById('vehicleType');
-        const brandSelect = document.getElementById('brand');
-        const modelSelect = document.getElementById('model');
-        const genSelect = document.getElementById('generation');
-        const DATA_URL = 'https://chaplashka.github.io/CarGuideBot/car_data.json';
+    <button onclick="sendData()">Отправить</button>
+</div>
+<script>
+    let allData = {};
+    let carData = {};
+    let currentType = '';
+    let commercialMode = false;
+    const vehicleTypeSelect = document.getElementById('vehicleType');
+    const commercialFields = document.getElementById('commercial-fields');
+    const commercialCategorySelect = document.getElementById('commercialCategory');
+    const brandSelect = document.getElementById('brand');
+    const modelSelect = document.getElementById('model');
+    const genFields = document.getElementById('generation-fields');
+    const genSelect = document.getElementById('generation');
+    const DATA_URL = 'https://chaplashka.github.io/CarGuideBot/car_data.json';
 
-        fetch(DATA_URL)
-            .then(response => response.json())
-            .then(data => {
-                allData = data;
-                vehicleTypeSelect.disabled = false;
-            })
-            .catch(e => {
-                alert('Ошибка загрузки данных: ' + e);
+    fetch(DATA_URL)
+        .then(response => response.json())
+        .then(data => {
+            allData = data;
+            vehicleTypeSelect.disabled = false;
+        })
+        .catch(e => {
+            alert('Ошибка загрузки данных: ' + e);
+        });
+
+    vehicleTypeSelect.addEventListener('change', function() {
+        currentType = this.value;
+        if (!currentType) {
+            commercialFields.style.display = 'none';
+            brandSelect.disabled = true;
+            modelSelect.disabled = true;
+            genFields.style.display = '';
+            genSelect.disabled = true;
+            brandSelect.innerHTML = '<option value="">Сначала выберите тип</option>';
+            modelSelect.innerHTML = '<option value="">Сначала выберите марку</option>';
+            genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
+            return;
+        }
+        // Для коммерческих включаем отдельную логику
+        if (currentType === 'COMMERCIAL_VEHICLE_DATA') {
+            commercialMode = true;
+            commercialFields.style.display = '';
+            genFields.style.display = 'none'; // нет поколения!
+            let categories = Object.keys(allData[currentType] || {});
+            commercialCategorySelect.innerHTML = '<option value="">Выберите вид</option>';
+            categories.forEach(category => {
+                let opt = document.createElement('option');
+                opt.value = category;
+                opt.innerText = category;
+                commercialCategorySelect.appendChild(opt);
             });
+            commercialCategorySelect.disabled = false;
 
-        vehicleTypeSelect.addEventListener('change', function() {
-            const type = this.value;
-            carData = allData[type] || {};
-            // Очистка
-            brandSelect.innerHTML = '<option value="">Выберите марку</option>';
-            brandSelect.disabled = !type;
+            // Сбросить всё ниже
+            brandSelect.innerHTML = '<option value="">Сначала выберите вид транспорта</option>';
+            brandSelect.disabled = true;
             modelSelect.innerHTML = '<option value="">Сначала выберите марку</option>';
             modelSelect.disabled = true;
-            genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
-            genSelect.disabled = true;
-            if (!type) return;
+        } else {
+            // Легковые
+            commercialMode = false;
+            commercialFields.style.display = 'none';
+            genFields.style.display = '';
+            carData = allData[currentType] || {};
+            brandSelect.innerHTML = '<option value="">Выберите марку</option>';
             Object.keys(carData).forEach(brand => {
                 let opt = document.createElement('option');
                 opt.value = brand;
                 opt.innerText = brand;
                 brandSelect.appendChild(opt);
             });
-        });
-
-        brandSelect.addEventListener('change', function() {
-            const brand = this.value;
-            modelSelect.innerHTML = '<option value="">Выберите модель</option>';
-            modelSelect.disabled = !brand;
+            brandSelect.disabled = false;
+            modelSelect.innerHTML = '<option value="">Сначала выберите марку</option>';
+            modelSelect.disabled = true;
             genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
             genSelect.disabled = true;
-            if (!brand) return;
-            const models = carData[brand] || {};
+        }
+    });
+
+    commercialCategorySelect.addEventListener('change', function() {
+        // Заполняем марки
+        const cat = this.value;
+        brandSelect.innerHTML = '<option value="">Выберите марку</option>';
+        brandSelect.disabled = !cat;
+        modelSelect.innerHTML = '<option value="">Сначала выберите марку</option>';
+        modelSelect.disabled = true;
+        if (!cat) return;
+        carData = allData['COMMERCIAL_VEHICLE_DATA'][cat] || {};
+        Object.keys(carData).forEach(brand => {
+            let opt = document.createElement('option');
+            opt.value = brand;
+            opt.innerText = brand;
+            brandSelect.appendChild(opt);
+        });
+    });
+
+    brandSelect.addEventListener('change', function() {
+        modelSelect.innerHTML = '<option value="">Выберите модель</option>';
+        modelSelect.disabled = !this.value;
+        if (commercialMode) {
+            // Для коммерческих — после модели всё, поколений нет!
+            if (!this.value) return;
+            const models = carData[this.value] || [];
+            models.forEach(model => {
+                let opt = document.createElement('option');
+                opt.value = model;
+                opt.innerText = model;
+                modelSelect.appendChild(opt);
+            });
+        } else {
+            // Для легковых
+            genSelect.innerHTML = '<option value="">Сначала выберите модель</option>';
+            genSelect.disabled = true;
+            if (!this.value) return;
+            const models = carData[this.value] || {};
             Object.keys(models).forEach(model => {
                 let opt = document.createElement('option');
                 opt.value = model;
                 opt.innerText = model;
                 modelSelect.appendChild(opt);
             });
-        });
+        }
+    });
 
-        modelSelect.addEventListener('change', function() {
-            const brand = brandSelect.value;
-            const model = this.value;
-            genSelect.innerHTML = '<option value="">Выберите поколение</option>';
-            genSelect.disabled = !model;
-            if (!model) return;
-            const generations = carData[brand] && carData[brand][model] ? carData[brand][model] : [];
-            generations.forEach(generation => {
-                let opt = document.createElement('option');
-                opt.value = generation;
-                opt.innerText = generation;
-                genSelect.appendChild(opt);
-            });
+    modelSelect.addEventListener('change', function() {
+        if (commercialMode) {
+            // Для коммерческих — ничего не делаем, на модели всё заканчивается!
+            return;
+        }
+        genSelect.innerHTML = '<option value="">Выберите поколение</option>';
+        genSelect.disabled = !this.value;
+        if (!this.value) return;
+        const brand = brandSelect.value;
+        const generations = carData[brand] && carData[brand][this.value] ? carData[brand][this.value] : [];
+        generations.forEach(generation => {
+            let opt = document.createElement('option');
+            opt.value = generation;
+            opt.innerText = generation;
+            genSelect.appendChild(opt);
         });
+    });
 
-        function sendData() {
-            const type = vehicleTypeSelect.value;
+    function sendData() {
+        const type = vehicleTypeSelect.value;
+        let data = { type };
+        if (type === 'COMMERCIAL_VEHICLE_DATA') {
+            const category = commercialCategorySelect.value;
             const brand = brandSelect.value;
             const model = modelSelect.value;
-            const generation = genSelect.value;
-            if (!type || !brand || !model || !generation) {
+            if (!category || !brand || !model) {
                 alert('Пожалуйста, выберите все параметры!');
                 return;
             }
-            const data = { type, brand, model, generation };
-            Telegram.WebApp.sendData(JSON.stringify(data));
+            data.category = category;
+            data.brand = brand;
+            data.model = model;
+        } else {
+            // Легковые
+            const brand = brandSelect.value;
+            const model = modelSelect.value;
+            const generation = genSelect.value;
+            if (!brand || !model || !generation) {
+                alert('Пожалуйста, выберите все параметры!');
+                return;
+            }
+            data.brand = brand;
+            data.model = model;
+            data.generation = generation;
         }
-    </script>
+        Telegram.WebApp.sendData(JSON.stringify(data));
+    }
+</script>
 </body>
 </html>
