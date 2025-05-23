@@ -26,32 +26,33 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            filter: brightness(0.75) saturate(1.07);
+            filter: brightness(0.72) saturate(1.09);
         }
-        /* Градиент внизу */
+        /* Градиент для читаемости */
         .bottom-gradient {
             position: fixed;
             left: 0; right: 0; bottom: 0;
-            height: 38vh;
+            height: 42vh;
             z-index: 2;
             pointer-events: none;
-            background: linear-gradient(to top, #181B20f0 75%, transparent 100%);
+            background: linear-gradient(to top, #181b20ee 83%, transparent 100%);
         }
-        /* Логотип */
+        /* Логотип CarGuide */
         .logo {
             position: fixed;
-            top: 34px;
-            left: 0;
-            width: 100vw;
+            top: 36px;
+            left: 0; right: 0;
+            text-align: center;
             z-index: 10;
-            display: flex;
-            justify-content: center;
             pointer-events: none;
         }
-        .logo img, .logo svg {
-            max-width: 180px;
-            height: auto;
-            filter: drop-shadow(0 2px 20px #181B20aa);
+        .logo-text {
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: 900;
+            font-size: 2.1rem;
+            color: #fff;
+            text-shadow: 0 4px 18px #000a, 0 1px 3px #000c;
+            letter-spacing: 0.02em;
         }
         /* Слайдер */
         .slider-container {
@@ -79,59 +80,60 @@
         .slide-content {
             position: relative;
             z-index: 5;
-            width: 92vw;
-            max-width: 470px;
-            margin: 0 auto;
-            padding-bottom: 116px;
+            width: 94vw;
+            max-width: 460px;
+            margin: 0 auto 0 auto;
+            padding-bottom: 115px;
             color: #fff;
             text-align: center;
-            text-shadow: 0 2px 16px #000b;
+            text-shadow: 0 2px 14px #000a;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .slide-title {
-            font-size: 1.32rem;
+            font-size: 1.42rem;
             font-weight: 900;
-            margin-bottom: 0.85rem;
+            margin-bottom: 1.1rem;
             letter-spacing: .01em;
             text-transform: uppercase;
-            text-shadow: 0 2px 24px #000c, 0 1px 4px #000b;
+            text-shadow: 0 2px 24px #000d, 0 1px 4px #000b;
         }
         .slide-desc {
-            font-size: 1.09rem;
+            font-size: 1.06rem;
             font-weight: 500;
-            color: #ececec;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 1px 7px #000d;
+            color: #e2e2e2;
+            margin-bottom: 2.3rem;
+            text-shadow: 0 1px 7px #000c;
         }
-        /* Кнопка */
+        /* Кнопка прозрачная */
         .slider-btn {
             position: fixed;
-            bottom: 25px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
             width: 92vw;
             max-width: 470px;
-            padding: 19px 0 16px 0;
-            background: #fff;
+            padding: 18px 0 15px 0;
+            background: rgba(255,255,255,0.17);
             color: #232e50;
             font-weight: 900;
-            font-size: 1.32rem;
+            font-size: 1.28rem;
             border: none;
             border-radius: 18px;
-            box-shadow: 0 3px 24px 0 #0003;
+            box-shadow: 0 3px 16px 0 #0005;
             letter-spacing: .01em;
             cursor: pointer;
             z-index: 15;
+            transition: background 0.16s, color 0.16s;
         }
-        .slider-btn:active { background: #f3f3f3; color: #444; }
+        .slider-btn:active { background: rgba(255,255,255,0.28); color: #212e57;}
         /* Индикаторы */
         .slider-indicators {
             position: fixed;
             left: 0; right: 0;
             bottom: 70px;
-            z-index: 9;
+            z-index: 11;
             display: flex;
             justify-content: center;
             gap: 9px;
@@ -140,32 +142,32 @@
             width: 13px;
             height: 13px;
             border-radius: 50%;
-            background: #fff5;
+            background: #fff4;
             border: none;
-            transition: background 0.18s;
+            transition: background 0.16s;
         }
         .indicator.active {
             background: #2565f7;
         }
         @media (max-width: 520px) {
-            .logo img, .logo svg { max-width: 106px;}
+            .logo-text { font-size: 1.18rem; }
             .slide-title { font-size: 1.01rem; }
-            .slide-desc { font-size: 0.92rem;}
-            .slider-btn { font-size: 1.06rem;}
+            .slide-desc { font-size: 0.89rem;}
+            .slider-btn { font-size: 1.05rem;}
         }
     </style>
 </head>
 <body>
     <!-- Видео на фоне -->
-    <video class="welcome-bg-video" src="https://github.com/user-attachments/assets/600d019d-daa0-49d5-9ebb-85b142fc2d8e" autoplay loop muted playsinline></video>
+    <video class="welcome-bg-video" src="media/your-welcome-video.mp4" autoplay loop muted playsinline></video>
 
-    <!-- Градиент внизу для читаемости текста -->
+    <!-- Градиент для читаемости текста -->
     <div class="bottom-gradient"></div>
 
-    <!-- Логотип CarGuide SVG (или PNG если надо) -->
+    <!-- Логотип CarGuide -->
     <div class="logo">
-        <!-- Вставь SVG-файл или картинку с логотипом -->
-        <img src="media/logo-carguide.svg" alt="CarGuide" />
+        <span class="logo-text">CarGuide</span>
+        <!-- Или подставь свой SVG или PNG сюда -->
     </div>
 
     <!-- Слайдер -->
