@@ -26,23 +26,32 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            filter: brightness(0.75) saturate(1.08);
+            filter: brightness(0.75) saturate(1.07);
+        }
+        /* Градиент внизу */
+        .bottom-gradient {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            height: 38vh;
+            z-index: 2;
+            pointer-events: none;
+            background: linear-gradient(to top, #181B20f0 75%, transparent 100%);
         }
         /* Логотип */
         .logo {
             position: fixed;
-            z-index: 10;
-            top: 36px;
+            top: 34px;
             left: 0;
             width: 100vw;
+            z-index: 10;
             display: flex;
             justify-content: center;
             pointer-events: none;
         }
-        .logo img {
-            width: 164px;
+        .logo img, .logo svg {
+            max-width: 180px;
             height: auto;
-            filter: drop-shadow(0 2px 16px #2227);
+            filter: drop-shadow(0 2px 20px #181B20aa);
         }
         /* Слайдер */
         .slider-container {
@@ -54,7 +63,7 @@
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            z-index: 3;
+            z-index: 4;
             position: relative;
         }
         .slide {
@@ -66,25 +75,14 @@
             justify-content: flex-end;
             align-items: center;
             position: relative;
-            /* Градиент внизу */
-        }
-        /* Затемняющий градиент снизу */
-        .slide::after {
-            content: "";
-            position: absolute;
-            left: 0; right: 0; bottom: 0;
-            height: 45%;
-            z-index: 1;
-            background: linear-gradient(to top, #181B209a 60%, transparent 100%);
-            pointer-events: none;
         }
         .slide-content {
             position: relative;
-            z-index: 4;
+            z-index: 5;
             width: 92vw;
-            max-width: 480px;
+            max-width: 470px;
             margin: 0 auto;
-            padding-bottom: 110px;
+            padding-bottom: 116px;
             color: #fff;
             text-align: center;
             text-shadow: 0 2px 16px #000b;
@@ -95,7 +93,7 @@
         .slide-title {
             font-size: 1.32rem;
             font-weight: 900;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.85rem;
             letter-spacing: .01em;
             text-transform: uppercase;
             text-shadow: 0 2px 24px #000c, 0 1px 4px #000b;
@@ -110,24 +108,24 @@
         /* Кнопка */
         .slider-btn {
             position: fixed;
-            bottom: 22px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
             width: 92vw;
             max-width: 470px;
-            padding: 20px 0 18px 0;
+            padding: 19px 0 16px 0;
             background: #fff;
             color: #232e50;
             font-weight: 900;
-            font-size: 1.34rem;
+            font-size: 1.32rem;
             border: none;
-            border-radius: 19px;
-            box-shadow: 0 3px 24px 0 #0004;
+            border-radius: 18px;
+            box-shadow: 0 3px 24px 0 #0003;
             letter-spacing: .01em;
             cursor: pointer;
             z-index: 15;
         }
-        .slider-btn:active { background: #f5f5f5; color: #444; }
+        .slider-btn:active { background: #f3f3f3; color: #444; }
         /* Индикаторы */
         .slider-indicators {
             position: fixed;
@@ -136,7 +134,7 @@
             z-index: 9;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 9px;
         }
         .indicator {
             width: 13px;
@@ -144,27 +142,30 @@
             border-radius: 50%;
             background: #fff5;
             border: none;
-            transition: background 0.17s;
+            transition: background 0.18s;
         }
         .indicator.active {
             background: #2565f7;
         }
         @media (max-width: 520px) {
-            .logo img { width: 106px;}
+            .logo img, .logo svg { max-width: 106px;}
             .slide-title { font-size: 1.01rem; }
-            .slide-desc { font-size: 0.93rem;}
+            .slide-desc { font-size: 0.92rem;}
             .slider-btn { font-size: 1.06rem;}
         }
     </style>
 </head>
 <body>
     <!-- Видео на фоне -->
-    <video class="welcome-bg-video" src="https://github.com/user-attachments/assets/600d019d-daa0-49d5-9ebb-85b142fc2d8e" autoplay loop muted playsinline></video>
+    <video class="welcome-bg-video" src="media/your_video.mp4" autoplay loop muted playsinline></video>
 
-    <!-- Логотип -->
+    <!-- Градиент внизу для читаемости текста -->
+    <div class="bottom-gradient"></div>
+
+    <!-- Логотип CarGuide SVG (или PNG если надо) -->
     <div class="logo">
-        <img src="media/logo.png" alt="CarGuide" />
-        <!-- Сюда вставь свой логотип (SVG или PNG с прозрачностью) -->
+        <!-- Вставь SVG-файл или картинку с логотипом -->
+        <img src="media/logo-carguide.svg" alt="CarGuide" />
     </div>
 
     <!-- Слайдер -->
@@ -176,7 +177,7 @@
     <button class="slider-btn" id="sliderBtn">Далее</button>
 
     <script>
-        // ---- СЛАЙДЫ ----
+        // ---- ДАННЫЕ СЛАЙДОВ ----
         const slides = [
             {
                 title: "МЫ — АВТОМОБИЛЬНЫЙ МАРКЕТПЛЕЙС",
@@ -251,9 +252,7 @@
             current = idx;
             updateSlider();
         }
-        window.addEventListener('resize', () => {
-            updateSlider();
-        });
+        window.addEventListener('resize', updateSlider);
         updateSlider();
     </script>
 </body>
