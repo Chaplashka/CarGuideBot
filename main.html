@@ -40,52 +40,55 @@
             padding: 0 18px;       /* Отступы слева и справа */
             background: #fff;
         }
-        /* Нижняя навигационная панель */   
+       <style>
+        /* ...другие стили... */
+
+        /* Нижняя навигационная панель (navbar) — меню-бар */
         .navbar {
-             position: fixed;
-             left: 0; right: 0; bottom: 0;
-             height: 74px;         /* ← Было 64px, теперь бар выше */
-             background: #fff;
-             box-shadow: 0 -2px 20px #0011; /* Тень сверху */
-             display: flex;
-             justify-content: space-around; /* Равномерное распределение кнопок */
-             align-items: center;
-             z-index: 99;
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            height: 74px;          /* ← Увеличил высоту меню-бара */
+            background: #fff;
+            box-shadow: 0 -2px 20px #0011;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 99;
         }
         /* Кнопка меню-бара */
         .nav-btn {
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             justify-content: center;
-             color: #b4b6c6;
-             text-decoration: none;
-             font-size: 1.02rem;   /* ← Было 0.83rem, подпись крупнее */
-             font-weight: 700;
-             width: 74px;          /* ← Было 64px, теперь шире */
-             height: 100%;
-             transition: color 0.15s;
-             cursor: pointer;
-             border: none;
-             background: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #b4b6c6;
+            text-decoration: none;
+            font-size: 1.02rem;   /* ← Крупнее подпись */
+            font-weight: 700;
+            width: 74px;          /* ← Шире кнопка */
+            height: 100%;
+            transition: color 0.15s;
+            cursor: pointer;
+            border: none;
+            background: none;
         }
-        /* Активная кнопка (выделение цветом) */
         .nav-btn.active, .nav-btn:active {
-            color: #5f60ea; /* Цвет активной кнопки */
+            color: #5f60ea;
         }
-      /* SVG-иконки внутри кнопки */
+        /* SVG-иконки внутри кнопки */
         .nav-btn svg {
             display: block;
             margin-bottom: 2px;
-            font-size: 2em;       /* ← Было 1.55em, теперь иконка крупнее */
-            width: 32px; height: 32px;  /* Было 26px */
+            font-size: 2em;       /* ← Крупнее иконка */
+            width: 32px; height: 32px;
         }
-        /* Мобильные стили (адаптация) */
+
+        /* Мобильные стили (адаптация) — можно увеличить и здесь */
         @media (max-width: 500px) {
             .header { font-size: 1.1rem; padding: 12px 0 7px 0;}
-            .navbar { height: 54px;}
-            .nav-btn { font-size: 0.70rem; width: 54px;}
-            .nav-btn svg { width: 20px; height: 20px;}
+            .navbar { height: 58px;}   /* ← Чуть выше и на мобильных */
+            .nav-btn { font-size: 0.90rem; width: 58px;}
+            .nav-btn svg { width: 24px; height: 24px; font-size: 1.3em;}
         }
     </style>
 </head>
