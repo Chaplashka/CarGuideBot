@@ -21,6 +21,8 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* ===== Верхняя шапка ===== */
         .header {
             width: 100%;
             padding: 16px 0 10px 0;
@@ -31,14 +33,38 @@
             font-weight: 800;
             color: #232e50;
             letter-spacing: 0.03em;
+            position: relative;
         }
+        /* Кнопка поиска в правом верхнем углу */
+        .search-btn {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #5f60ea;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+        .search-btn svg {
+            width: 28px;
+            height: 28px;
+            display: block;
+        }
+
         .main-content {
             flex: 1 1 auto;
             padding: 0 18px;
             background: #fff;
             min-width: 320px;
         }
-        /* ======== Меню-бар снизу ======== */
+
+        /* ===== Меню-бар ===== */
         .navbar {
             position: fixed;
             left: 0; right: 0; bottom: 0;
@@ -52,20 +78,16 @@
             justify-content: space-around;
             align-items: center;
             z-index: 99;
-
-            /* Плавное появление/исчезновение */
             opacity: 0;
             transform: translateY(60px) scale(0.99);
             transition: opacity 0.45s cubic-bezier(.5,1.5,.4,1), transform 0.5s cubic-bezier(.6,1.35,.45,1);
-            pointer-events: none; /* Не кликается, если скрыт */
+            pointer-events: none;
         }
-        /* Класс для плавного показа */
         .navbar.visible {
             opacity: 1;
             transform: translateY(0) scale(1);
             pointer-events: auto;
         }
-        /* Класс для плавного скрытия (можешь добавить по js) */
         .navbar.hide {
             opacity: 0;
             transform: translateY(60px) scale(0.99);
@@ -103,6 +125,8 @@
             .navbar { height: 58px; }
             .nav-btn { font-size: 0.90rem; width: 58px;}
             .nav-btn svg { width: 24px; height: 24px; font-size: 1.3em;}
+            .search-btn { right: 8px; }
+            .search-btn svg { width: 22px; height: 22px;}
         }
     </style>
     <script>
@@ -110,52 +134,58 @@
         window.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 document.querySelector('.navbar').classList.add('visible');
-            }, 200); // небольшая задержка для плавности (можешь изменить)
+            }, 200); // задержка для плавности
         });
 
-        // Если надо плавно скрывать меню, просто вызывай:
-        // document.querySelector('.navbar').classList.remove('visible');
-        // или добавить класс .hide (для жёсткого скрытия)
+        // Пример: если хочешь показать окно поиска — добавь свою функцию здесь
+        function openSearch() {
+            alert('Здесь будет поиск (можешь заменить alert на свое окно)');
+        }
     </script>
 </head>
 <body>
-    <div class="header">Главная</div>
-    <div class="main-content">
-        <!-- Тут будет основной контент -->
+    <!-- ===== Верхний бар с заголовком и иконкой поиска ===== -->
+    <div class="header">
+        Главная
+        <button class="search-btn" onclick="openSearch()" aria-label="Поиск">
+            <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
     </div>
-    <!-- Меню-бар, по умолчанию скрыто, появляется через js -->
+
+    <!-- Основная часть (пока пустая) -->
+    <div class="main-content">
+    </div>
+
+    <!-- ===== Нижнее меню-бар ===== -->
     <nav class="navbar">
+        <!-- Кнопка "Главная" -->
         <a class="nav-btn active" href="#">
-            <!-- Домик -->
             <svg viewBox="0 0 24 24" fill="none">
                 <path d="M4 12L12 5L20 12V19C20 19.55 19.55 20 19 20H5C4.45 20 4 19.55 4 19V12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9 20V14H15V20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span>Главная</span>
         </a>
+        <!-- Кнопка "Заявки" -->
         <a class="nav-btn" href="#">
             <svg viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
-                <rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
-                <rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <span>Категории</span>
-        </a>
-        <a class="nav-btn" href="#">
-            <svg viewBox="0 0 24 24" fill="none">
+                <!-- Иконка "заявка" (можно сменить на другую) -->
                 <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
                 <path d="M7 3V7" stroke="currentColor" stroke-width="2"/>
                 <path d="M17 3V7" stroke="currentColor" stroke-width="2"/>
             </svg>
-            <span>Объявления</span>
+            <span>Заявки</span>
         </a>
+        <!-- Кнопка "Консультация" -->
         <a class="nav-btn" href="#">
             <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-                <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <!-- Иконка "чата"/"сообщения" -->
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             </svg>
-            <span>Поиск</span>
+            <span>Консультация</span>
         </a>
     </nav>
 </body>
