@@ -2,232 +2,211 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Главная | CarGuide</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CarGuide — Главная</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+        :root {
+            --blue: #2170ee;
+            --light: #f5f8fb;
+            --card-bg: #fff;
+            --text-dark: #1a2333;
+            --gray: #868686;
+        }
         html, body {
-            height: 100%;
             margin: 0;
             padding: 0;
-            background: #fff;
+            background: var(--light);
+            color: var(--text-dark);
             font-family: 'Montserrat', Arial, sans-serif;
-            min-width: 320px;
-        }
-        body {
             min-height: 100vh;
             width: 100vw;
-            box-sizing: border-box;
+        }
+        body {
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
-
-        /* ===== Верхний бар (шапка) ===== */
+        /* Шапка */
         .header {
             width: 100%;
-            padding: 14px 0 10px 0;
-            background: #fff;
-            box-shadow: 0 1px 0 #eee;
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #232e50;
-            letter-spacing: 0.03em;
-            position: relative;
-            text-align: left;
+            background: var(--card-bg);
+            padding: 18px 0 5px 0;
+            text-align: center;
+            box-shadow: 0 1px 0 #e5ebf4;
         }
-        #welcome-row {
+        .header-logo {
+            font-weight: 900;
+            font-size: 2.1rem;
+            letter-spacing: 0.02em;
+            color: var(--blue);
+            margin-bottom: 6px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        /* Карусель (верхний баннер) */
+        .carousel-block {
+            background: var(--card-bg);
+            margin: 0 0 12px 0;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px #c0d6f722;
+            padding: 15px 20px 20px 20px;
+            margin-left: 14px;
+            margin-right: 14px;
+        }
+        .carousel-title {
+            font-weight: 900;
+            font-size: 1.14rem;
+            margin-bottom: 6px;
+            color: #1a2333;
+        }
+        .carousel-desc {
+            font-size: 1.02rem;
+            color: #344358;
+        }
+        .carousel-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--blue);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .carousel-dots {
+            margin-top: 12px;
+            text-align: center;
+        }
+        .dot {
+            display: inline-block;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #d3e2f8;
+            margin: 0 2px;
+        }
+        .dot.active {
+            background: var(--blue);
+        }
+        /* Поиск */
+        .search-bar {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            max-width: 1024px;
-            margin: 0 auto;
-            padding: 0 20px;
+            background: var(--card-bg);
+            border-radius: 14px;
+            margin: 16px 14px 0 14px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 8px #dbeafd26;
         }
-        #welcome-user {
-            font-size: 1.07em;
-            font-weight: 600;
-            color: #3e4782;
+        .search-bar input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 1.05rem;
+            background: transparent;
+            font-family: 'Montserrat', Arial, sans-serif;
+            color: #232e50;
         }
-        .search-btn {
+        .search-bar .icon-btn {
             background: none;
             border: none;
+            margin-left: 8px;
             cursor: pointer;
-            color: #5f60ea;
-            padding: 0;
-            margin: 0;
+            color: var(--blue);
+        }
+        .search-bar .icon-btn svg {
+            width: 22px; height: 22px;
+        }
+        /* Быстрые действия (иконки) */
+        .quick-acts-row {
             display: flex;
-            align-items: center;
+            gap: 18px;
+            justify-content: space-between;
+            margin: 20px 14px 10px 14px;
         }
-        .search-btn svg {
-            width: 28px;
-            height: 28px;
-            display: block;
-        }
-
-        /* ============ Основной блок ============ */
-        .main-content {
-            flex: 1 1 auto;
-            padding: 8px 0 82px 0;
-            background: #fff;
-            max-width: 1024px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        /* Блоки секций */
-        .block {
-            margin: 16px 18px;
-            border-radius: 18px;
-            background: #f7f8fa;
-            box-shadow: 0 2px 14px #ececff13;
-            padding: 14px 16px;
-        }
-        .block-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #353d70;
-            margin-bottom: 14px;
-        }
-        /* Быстрые действия (кнопки) */
-        .quick-actions {
-            display: flex;
-            gap: 13px;
-        }
-        .quick-btn {
+        .quick-act {
             flex: 1 1 0;
-            padding: 14px 0;
-            font-size: 1.03rem;
-            font-weight: 700;
-            color: #fff;
-            background: #5f60ea;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px #5f60ea17;
-            transition: background 0.18s;
-        }
-        .quick-btn.sell { background: #ea5f6a; }
-        .quick-btn.requests { background: #60eac6; color: #23374c; }
-        .quick-btn:active { background: #353d70; }
-
-        /* Популярные марки (горизонтальный скролл) */
-        .brand-scroll {
+            background: var(--card-bg);
+            border-radius: 16px;
             display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-        .brand-circle {
-            width: 62px;
-            height: 62px;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
+            flex-direction: column;
             align-items: center;
+            padding: 16px 4px 10px 4px;
+            box-shadow: 0 2px 10px #dbeafd19;
+        }
+        .quick-act img {
+            width: 42px; height: 42px;
+            margin-bottom: 7px;
+        }
+        .quick-act span {
+            color: var(--gray);
+            font-size: 0.97rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        /* Табы */
+        .tabs-row {
+            display: flex;
+            margin: 12px 0 0 0;
             justify-content: center;
-            box-shadow: 0 2px 8px #5f60ea11;
-            border: 1px solid #e7e7f1;
+            align-items: center;
+            gap: 20px;
         }
-        .brand-circle img {
-            max-width: 38px;
-            max-height: 38px;
+        .tab {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: #b0b4bc;
+            cursor: pointer;
+            padding: 6px 0 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.12s;
         }
-        /* Секция карточек авто */
-        .cars-cards {
+        .tab.active {
+            color: var(--blue);
+            border-bottom: 2.8px solid var(--blue);
+        }
+        /* Карточки авто */
+        .cars-row {
             display: flex;
             gap: 14px;
             overflow-x: auto;
+            margin: 8px 0 0 0;
+            padding: 0 8px 4px 8px;
         }
         .car-card {
-            min-width: 190px;
-            background: #fff;
+            min-width: 162px;
+            max-width: 175px;
+            background: var(--card-bg);
             border-radius: 14px;
-            box-shadow: 0 2px 16px #232e5030;
-            padding: 12px 12px 10px 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            box-shadow: 0 2px 8px #dbeafd25;
+            margin-bottom: 10px;
         }
         .car-card img {
             width: 100%;
-            max-width: 166px;
-            border-radius: 10px;
-            margin-bottom: 7px;
+            border-radius: 14px 14px 0 0;
+            height: 96px;
+            object-fit: cover;
         }
-        .car-card .model {
+        .car-card .car-title {
+            font-weight: 700;
+            margin: 9px 0 2px 10px;
             font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 2px;
         }
-        .car-card .desc {
-            font-size: 0.93rem;
-            color: #7881b3;
+        .car-card .car-price {
+            color: var(--blue);
+            font-size: 1.08rem;
+            font-weight: 900;
+            margin: 1px 0 8px 10px;
         }
-        /* Список последних авто (листинг) */
-        .cars-list {
-            display: flex;
-            flex-direction: column;
-            gap: 13px;
-        }
-        .car-listing {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px #5f60ea11;
-            padding: 7px 11px;
-        }
-        .car-listing img {
-            width: 56px;
-            height: 38px;
-            border-radius: 7px;
-        }
-        .car-listing .list-info {
-            flex: 1;
-        }
-        .car-listing .list-info .model {
-            font-weight: 700;
-            font-size: 0.99rem;
-        }
-        .car-listing .list-info .desc {
-            font-size: 0.88rem;
-            color: #778;
-        }
-        /* Баннер/акция */
-        .promo-banner {
-            background: linear-gradient(90deg, #7e7fee 40%, #52dcd2 100%);
-            color: #fff;
-            border-radius: 13px;
-            text-align: center;
-            padding: 19px 8px 15px 8px;
-            font-size: 1.13rem;
-            font-weight: 700;
-            letter-spacing: .02em;
-            box-shadow: 0 2px 24px #5f60ea19;
-        }
-        /* ===== Меню-бар ===== */
+        /* Меню-бар снизу */
         .navbar {
             position: fixed;
             left: 0; right: 0; bottom: 0;
             width: 100vw;
-            min-width: 320px;
-            height: 74px;
             background: #fff;
-            box-shadow: 0 -2px 20px #0011;
+            box-shadow: 0 -2px 16px #a4b4e021;
             display: flex;
-            flex-direction: row;
             justify-content: space-around;
             align-items: center;
-            z-index: 99;
-            opacity: 0;
-            transform: translateY(60px) scale(0.99);
-            transition: opacity 0.45s cubic-bezier(.5,1.5,.4,1), transform 0.5s cubic-bezier(.6,1.35,.45,1);
-            pointer-events: none;
-        }
-        .navbar.visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
+            height: 64px;
+            z-index: 22;
         }
         .nav-btn {
             display: flex;
@@ -238,172 +217,130 @@
             text-decoration: none;
             font-size: 1.02rem;
             font-weight: 700;
-            width: 74px;
-            height: 100%;
+            min-width: 64px;
             transition: color 0.15s;
             cursor: pointer;
             border: none;
             background: none;
             user-select: none;
         }
-        .nav-btn.active, .nav-btn:active { color: #5f60ea; }
+        .nav-btn.active, .nav-btn:active { color: var(--blue);}
         .nav-btn svg {
             display: block;
-            margin-bottom: 2px;
-            font-size: 2em;
-            width: 32px; height: 32px;
+            margin-bottom: 1px;
+            width: 27px; height: 27px;
         }
-        @media (max-width: 500px) {
-            .header { font-size: 1rem; padding: 10px 0 7px 0;}
-            .main-content { padding-bottom: 68px;}
-            .navbar { height: 58px; }
-            .nav-btn { font-size: 0.88rem; width: 56px;}
-            .nav-btn svg { width: 22px; height: 22px; font-size: 1.2em;}
-            .search-btn { right: 8px; }
-            .search-btn svg { width: 21px; height: 21px;}
-            .brand-circle { width: 48px; height: 48px;}
-            .brand-circle img { max-width: 28px; max-height: 28px;}
+        /* Мобильная адаптация */
+        @media (max-width: 540px) {
+            .header-logo { font-size: 1.25rem;}
+            .carousel-block { margin: 0 0 12px 0; border-radius: 12px;}
+            .quick-acts-row { gap: 9px; }
+            .quick-act { border-radius: 9px; }
+            .car-card { min-width: 128px; max-width: 168px;}
+            .cars-row { gap: 7px; }
+            .navbar { height: 54px;}
+            .nav-btn { min-width: 36px; font-size: 0.9rem;}
+            .nav-btn svg { width: 19px; height: 19px;}
         }
     </style>
-    <script>
-        // =========================
-        // Получаем имя пользователя из Telegram WebApp (если есть)
-        // =========================
-        window.addEventListener('DOMContentLoaded', function() {
-            let tg = window.Telegram && window.Telegram.WebApp;
-            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                let user = tg.initDataUnsafe.user;
-                let name = user.first_name || user.username || "Гость";
-                document.getElementById('welcome-user').textContent = "Привет, " + name;
-            } else {
-                document.getElementById('welcome-user').textContent = "Привет!";
-            }
-            setTimeout(function() {
-                document.querySelector('.navbar').classList.add('visible');
-            }, 200);
-        });
-
-        // ======= Пример обработчика поиска =======
-        function openSearch() {
-            alert('Поиск по авто');
-        }
-    </script>
 </head>
 <body>
-    <!-- ======= Шапка (верхний бар) ======= -->
+    <!-- ===== Шапка с логотипом ===== -->
     <div class="header">
-        <div id="welcome-row">
-            <!-- Приветствие с логином из ТГ -->
-            <span id="welcome-user"></span>
-            <!-- Кнопка поиска -->
-            <button class="search-btn" onclick="openSearch()" aria-label="Поиск">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-                    <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
+        <div class="header-logo">CarGuide</div>
+    </div>
+
+    <!-- ===== Карусель/Баннер ===== -->
+    <div class="carousel-block">
+        <div class="carousel-title">Мы открылись!</div>
+        <div class="carousel-desc">
+            Автомобильный маркетплейс <b>CarGuide</b> запущен для быстрых покупок и продаж машин онлайн!
+        </div>
+        <a href="#" class="carousel-link">Узнать подробнее</a>
+        <div class="carousel-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
         </div>
     </div>
 
-    <!-- ======= Основной контент ======= -->
-    <div class="main-content">
-
-        <!-- Быстрые действия (верхние кнопки) -->
-        <div class="block">
-            <div class="block-title">Быстрые действия:</div>
-            <div class="quick-actions">
-                <button class="quick-btn">Купить авто</button>
-                <button class="quick-btn sell">Продать авто</button>
-                <button class="quick-btn requests">Заявки</button>
-            </div>
-        </div>
-
-        <!-- Популярные марки (горизонтальный скролл) -->
-        <div class="block">
-            <div class="block-title">Популярные марки:</div>
-            <div class="brand-scroll">
-                <!-- Добавляй или меняй бренды по вкусу -->
-                <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/bmw.svg" alt="BMW"></div>
-                <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/toyota-2.svg" alt="Toyota"></div>
-                <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/audi-4.svg" alt="Audi"></div>
-                <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/mercedes-benz-9.svg" alt="Mercedes"></div>
-                <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/volkswagen-9.svg" alt="Volkswagen"></div>
-                <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/kia-9.svg" alt="Kia"></div>
-                <!-- ... -->
-            </div>
-        </div>
-
-        <!-- Топ предложения недели (карточки) -->
-        <div class="block">
-            <div class="block-title">Топ предложения недели:</div>
-            <div class="cars-cards">
-                <div class="car-card">
-                    <img src="https://cdn.pixabay.com/photo/2017/01/06/19/15/audi-1957037_1280.jpg" alt="Audi">
-                    <div class="model">Audi A4</div>
-                    <div class="desc">2018 · 72 000 км · 2.0T</div>
-                </div>
-                <div class="car-card">
-                    <img src="https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_1280.jpg" alt="BMW">
-                    <div class="model">BMW 320i</div>
-                    <div class="desc">2019 · 45 000 км · 2.0T</div>
-                </div>
-                <!-- Можно добавить еще карточки -->
-            </div>
-        </div>
-
-        <!-- Последние добавленные (листинг) -->
-        <div class="block">
-            <div class="block-title">Последние добавленные:</div>
-            <div class="cars-list">
-                <div class="car-listing">
-                    <img src="https://cdn.pixabay.com/photo/2016/10/28/22/23/automobile-1789076_1280.jpg" alt="VW Passat">
-                    <div class="list-info">
-                        <div class="model">VW Passat</div>
-                        <div class="desc">2020 · 30 000 км · 1.4T</div>
-                    </div>
-                </div>
-                <div class="car-listing">
-                    <img src="https://cdn.pixabay.com/photo/2015/01/19/13/51/car-604019_1280.jpg" alt="Mercedes">
-                    <div class="list-info">
-                        <div class="model">Mercedes C200</div>
-                        <div class="desc">2017 · 58 000 км · 1.6T</div>
-                    </div>
-                </div>
-                <!-- Добавляй новые авто тут -->
-            </div>
-        </div>
-
-        <!-- Баннер / Акция / Новости -->
-        <div class="block promo-banner">
-            -5% на покупку до конца месяца! <br>Бесплатная консультация по любым вопросам
-        </div>
-
+    <!-- ===== Поисковая строка ===== -->
+    <div class="search-bar">
+        <input type="text" placeholder="Марка или модель">
+        <button class="icon-btn" title="Фильтр">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M3 6h18M6 12h12M9 18h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
     </div>
-    <!-- ======= Нижний меню-бар ======= -->
+
+    <!-- ===== Быстрые действия (иконки) ===== -->
+    <div class="quick-acts-row">
+        <div class="quick-act">
+            <img src="https://img.icons8.com/ios-filled/100/2170ee/car--v2.png" alt="Покупайте">
+            <span>Покупайте</span>
+        </div>
+        <div class="quick-act">
+            <img src="https://img.icons8.com/ios-filled/100/2170ee/car-key.png" alt="Продавайте">
+            <span>Продавайте</span>
+        </div>
+        <div class="quick-act">
+            <img src="https://img.icons8.com/ios-filled/100/2170ee/maintenance.png" alt="Обслуживайте">
+            <span>Обслуживайте</span>
+        </div>
+        <div class="quick-act">
+            <img src="https://img.icons8.com/ios-filled/100/2170ee/shield.png" alt="Гарантия">
+            <span>Гарантия</span>
+        </div>
+    </div>
+
+    <!-- ===== Табы ===== -->
+    <div class="tabs-row">
+        <span class="tab active">Рекомендации</span>
+        <span class="tab">Просмотренные</span>
+        <span class="tab">Параллельный импорт</span>
+    </div>
+
+    <!-- ===== Листинг авто ===== -->
+    <div class="cars-row">
+        <div class="car-card">
+            <img src="https://carsguide-res.cloudinary.com/image/upload/f_auto,fl_lossy,q_auto,t_cg_hero_large/v1/editorial/2022-BMW-320i-black-sedan-sha-gq" alt="BMW 320i">
+            <div class="car-title">BMW 320i</div>
+            <div class="car-price">1 890 000 ₽</div>
+        </div>
+        <div class="car-card">
+            <img src="https://carsguide-res.cloudinary.com/image/upload/f_auto,fl_lossy,q_auto,t_cg_hero_large/v1/editorial/2017-Audi-A4-black-sedan-sha-gq" alt="Audi A4">
+            <div class="car-title">Audi A4</div>
+            <div class="car-price">1 950 000 ₽</div>
+        </div>
+        <div class="car-card">
+            <img src="https://carsguide-res.cloudinary.com/image/upload/f_auto,fl_lossy,q_auto,t_cg_hero_large/v1/editorial/2019-Hyundai-Solaris-white-sedan-sha-gq" alt="Hyundai Solaris">
+            <div class="car-title">Hyundai Solaris</div>
+            <div class="car-price">1 389 000 ₽</div>
+        </div>
+        <!-- Добавь ещё карточек -->
+    </div>
+
+    <!-- ===== Меню-бар снизу ===== -->
     <nav class="navbar">
-        <!-- Главная -->
         <a class="nav-btn active" href="#">
             <svg viewBox="0 0 24 24" fill="none">
                 <path d="M4 12L12 5L20 12V19C20 19.55 19.55 20 19 20H5C4.45 20 4 19.55 4 19V12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M9 20V14H15V20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>Главная</span>
         </a>
-        <!-- Заявки -->
+        <a class="nav-btn" href="#"><img src="https://img.icons8.com/ios-filled/50/2170ee/chat.png" style="width:26px;height:26px;" alt="Чат"><span style="font-size:0.93rem;">Чат</span></a>
         <a class="nav-btn" href="#">
             <svg viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
-                <path d="M7 3V7" stroke="currentColor" stroke-width="2"/>
-                <path d="M17 3V7" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>Заявки</span>
         </a>
-        <!-- Консультация -->
         <a class="nav-btn" href="#">
             <svg viewBox="0 0 24 24" fill="none">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <path d="M15 9l-6 6M9 9h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>Консультация</span>
         </a>
     </nav>
 </body>
