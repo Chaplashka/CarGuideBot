@@ -22,7 +22,7 @@
             flex-direction: column;
         }
 
-        /* ===== Верхний бар ===== */
+        /* ===== Верхний бар (шапка) ===== */
         .header {
             width: 100%;
             padding: 14px 0 10px 0;
@@ -73,6 +73,7 @@
             margin: 0 auto;
             width: 100%;
         }
+        /* Блоки секций */
         .block {
             margin: 16px 18px;
             border-radius: 18px;
@@ -265,7 +266,9 @@
         }
     </style>
     <script>
-        // Telegram WebApp API — получаем имя пользователя
+        // =========================
+        // Получаем имя пользователя из Telegram WebApp (если есть)
+        // =========================
         window.addEventListener('DOMContentLoaded', function() {
             let tg = window.Telegram && window.Telegram.WebApp;
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -280,17 +283,19 @@
             }, 200);
         });
 
-        // Поиск
+        // ======= Пример обработчика поиска =======
         function openSearch() {
             alert('Поиск по авто');
         }
     </script>
 </head>
 <body>
-    <!-- ВЕРХНИЙ БАР -->
+    <!-- ======= Шапка (верхний бар) ======= -->
     <div class="header">
         <div id="welcome-row">
+            <!-- Приветствие с логином из ТГ -->
             <span id="welcome-user"></span>
+            <!-- Кнопка поиска -->
             <button class="search-btn" onclick="openSearch()" aria-label="Поиск">
                 <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
@@ -299,9 +304,11 @@
             </button>
         </div>
     </div>
+
+    <!-- ======= Основной контент ======= -->
     <div class="main-content">
 
-        <!-- БЫСТРЫЕ ДЕЙСТВИЯ -->
+        <!-- Быстрые действия (верхние кнопки) -->
         <div class="block">
             <div class="block-title">Быстрые действия:</div>
             <div class="quick-actions">
@@ -311,21 +318,22 @@
             </div>
         </div>
 
-        <!-- ПОПУЛЯРНЫЕ МАРКИ -->
+        <!-- Популярные марки (горизонтальный скролл) -->
         <div class="block">
             <div class="block-title">Популярные марки:</div>
             <div class="brand-scroll">
+                <!-- Добавляй или меняй бренды по вкусу -->
                 <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/bmw.svg" alt="BMW"></div>
                 <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/toyota-2.svg" alt="Toyota"></div>
                 <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/audi-4.svg" alt="Audi"></div>
                 <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/mercedes-benz-9.svg" alt="Mercedes"></div>
                 <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/volkswagen-9.svg" alt="Volkswagen"></div>
                 <div class="brand-circle"><img src="https://cdn.worldvectorlogo.com/logos/kia-9.svg" alt="Kia"></div>
-                <!-- Добавь еще бренды! -->
+                <!-- ... -->
             </div>
         </div>
 
-        <!-- ТОП ПРЕДЛОЖЕНИЯ НЕДЕЛИ -->
+        <!-- Топ предложения недели (карточки) -->
         <div class="block">
             <div class="block-title">Топ предложения недели:</div>
             <div class="cars-cards">
@@ -339,11 +347,11 @@
                     <div class="model">BMW 320i</div>
                     <div class="desc">2019 · 45 000 км · 2.0T</div>
                 </div>
-                <!-- Еще карточки -->
+                <!-- Можно добавить еще карточки -->
             </div>
         </div>
 
-        <!-- ПОСЛЕДНИЕ ДОБАВЛЕННЫЕ -->
+        <!-- Последние добавленные (листинг) -->
         <div class="block">
             <div class="block-title">Последние добавленные:</div>
             <div class="cars-list">
@@ -361,18 +369,19 @@
                         <div class="desc">2017 · 58 000 км · 1.6T</div>
                     </div>
                 </div>
-                <!-- Еще авто -->
+                <!-- Добавляй новые авто тут -->
             </div>
         </div>
 
-        <!-- БАННЕР / АКЦИЯ / НОВОСТИ -->
+        <!-- Баннер / Акция / Новости -->
         <div class="block promo-banner">
             -5% на покупку до конца месяца! <br>Бесплатная консультация по любым вопросам
         </div>
 
     </div>
-    <!-- МЕНЮ-БАР СНИЗУ -->
+    <!-- ======= Нижний меню-бар ======= -->
     <nav class="navbar">
+        <!-- Главная -->
         <a class="nav-btn active" href="#">
             <svg viewBox="0 0 24 24" fill="none">
                 <path d="M4 12L12 5L20 12V19C20 19.55 19.55 20 19 20H5C4.45 20 4 19.55 4 19V12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -380,6 +389,7 @@
             </svg>
             <span>Главная</span>
         </a>
+        <!-- Заявки -->
         <a class="nav-btn" href="#">
             <svg viewBox="0 0 24 24" fill="none">
                 <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
@@ -388,6 +398,7 @@
             </svg>
             <span>Заявки</span>
         </a>
+        <!-- Консультация -->
         <a class="nav-btn" href="#">
             <svg viewBox="0 0 24 24" fill="none">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
