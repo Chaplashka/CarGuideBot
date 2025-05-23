@@ -29,11 +29,20 @@
             background: #fff;
             box-shadow: 0 1px 0 #eee;
             text-align: center;
-            font-size: 1.42rem;
+            font-size: 1.28rem;
             font-weight: 800;
             color: #232e50;
             letter-spacing: 0.03em;
             position: relative;
+        }
+        /* Приветствие с именем */
+        #welcome-user {
+            font-size: 1.04em;
+            font-weight: 600;
+            color: #3e4782;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
         }
         /* Кнопка поиска в правом верхнем углу */
         .search-btn {
@@ -121,32 +130,41 @@
             width: 32px; height: 32px;
         }
         @media (max-width: 500px) {
-            .header { font-size: 1.1rem; padding: 12px 0 7px 0;}
+            .header { font-size: 1rem; padding: 12px 0 7px 0;}
             .navbar { height: 58px; }
-            .nav-btn { font-size: 0.90rem; width: 58px;}
-            .nav-btn svg { width: 24px; height: 24px; font-size: 1.3em;}
+            .nav-btn { font-size: 0.88rem; width: 56px;}
+            .nav-btn svg { width: 22px; height: 22px; font-size: 1.2em;}
             .search-btn { right: 8px; }
-            .search-btn svg { width: 22px; height: 22px;}
+            .search-btn svg { width: 21px; height: 21px;}
         }
     </style>
     <script>
-        // Плавное появление меню-бар после загрузки страницы
+        // Получаем имя пользователя из Telegram WebApp и показываем приветствие
         window.addEventListener('DOMContentLoaded', function() {
+            let tg = window.Telegram && window.Telegram.WebApp;
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                let user = tg.initDataUnsafe.user;
+                let name = user.first_name || user.username || "Гость";
+                document.getElementById('welcome-user').textContent = "Здравствуйте, " + name + "!";
+            } else {
+                document.getElementById('welcome-user').textContent = "Здравствуйте!";
+            }
+            // Плавное появление меню-бара
             setTimeout(function() {
                 document.querySelector('.navbar').classList.add('visible');
-            }, 200); // задержка для плавности
+            }, 200);
         });
 
-        // Пример: если хочешь показать окно поиска — добавь свою функцию здесь
+        // Пример обработчика поиска
         function openSearch() {
-            alert('Здесь будет поиск (можешь заменить alert на свое окно)');
+            alert('Здесь будет поиск!');
         }
     </script>
 </head>
 <body>
-    <!-- ===== Верхний бар с заголовком и иконкой поиска ===== -->
+    <!-- Верхний бар с приветствием и иконкой поиска -->
     <div class="header">
-        Главная
+        <span id="welcome-user"></span>
         <button class="search-btn" onclick="openSearch()" aria-label="Поиск">
             <svg viewBox="0 0 24 24" fill="none">
                 <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
@@ -159,7 +177,7 @@
     <div class="main-content">
     </div>
 
-    <!-- ===== Нижнее меню-бар ===== -->
+    <!-- Нижний меню-бар -->
     <nav class="navbar">
         <!-- Кнопка "Главная" -->
         <a class="nav-btn active" href="#">
