@@ -9,107 +9,245 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background: #181B20 !important;
-            color: #fff !important;
+            background: #181B20;
+            color: #fff;
         }
         body {
+            font-family: 'Montserrat', Arial, sans-serif;
             min-height: 100vh;
             min-width: 100vw;
-            font-family: 'Montserrat', 'Inter', Arial, sans-serif;
-            position: relative;
             overflow: hidden;
         }
+        /* Фоновое видео */
         .welcome-bg-video {
             position: fixed;
-            z-index: 1;
+            z-index: 0;
             left: 0; top: 0; right: 0; bottom: 0;
-            width: 100vw; height: 100vh;
-            object-fit: cover;
-            filter: brightness(0.72);
-            opacity: 1;
-            transition: opacity 0.7s cubic-bezier(.77,0,.18,1);
-        }
-        .welcome-bg-video.hide-bg {
-            opacity: 0 !important;
-        }
-        .welcome-content {
-            position: relative;
-            z-index: 2;
+            width: 100vw;
             height: 100vh;
+            object-fit: cover;
+            filter: brightness(0.74) saturate(1.1);
+        }
+        /* Логотип */
+        .logo {
+            position: absolute;
+            top: 28px;
+            left: 0;
+            width: 100vw;
+            z-index: 2;
+            text-align: center;
+        }
+        .logo img {
+            max-width: 178px;
+            height: auto;
+        }
+        /* Слайдер */
+        .slider-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: stretch;
+            justify-content: flex-start;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            z-index: 3;
+            position: relative;
+        }
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            position: relative;
+            scroll-snap-align: start;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            align-items: flex-start;
-            padding: 0 0 54px 34px;
-            box-sizing: border-box;
-            opacity: 1;
-            transition: opacity 0.7s cubic-bezier(.77,0,.18,1), transform 0.7s cubic-bezier(.77,0,.18,1);
-        }
-        .welcome-content.hide-content {
-            opacity: 0 !important;
-            pointer-events: none;
-            transform: translateY(30px) scale(0.99);
-        }
-        .welcome-title {
-            font-family: 'Montserrat', Arial, sans-serif;
-            font-size: 3.2rem;
-            font-weight: 900;
-            margin-bottom: 10px;
-            line-height: 1.06;
-            letter-spacing: -1px;
-        }
-        .welcome-hello {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-            display: flex;
             align-items: center;
+            transition: opacity 0.4s;
+            background: rgba(24,27,32,0.01); /* чтобы текст всегда читаем */
         }
-        .welcome-hello span {
-            font-size: 1.5rem;
-            margin-left: 0.6rem;
+        .slide-content {
+            position: relative;
+            z-index: 4;
+            width: 100vw;
+            padding-bottom: 110px;
+            color: #fff;
+            text-align: center;
+            text-shadow: 0 2px 12px #000c;
         }
-        .welcome-desc {
-            font-size: 1.02rem;
-            font-family: 'Inter', Arial, sans-serif;
-            opacity: 0.97;
-            margin-bottom: 0;
-            margin-top: 16px;
-            max-width: 350px;
+        .slide-title {
+            font-size: 2.1rem;
+            font-weight: 900;
+            margin-bottom: 0.9rem;
+            letter-spacing: 0;
+            text-shadow: 0 2px 20px #0009;
         }
-        @media (max-width: 480px) {
-            .welcome-content {
-                padding: 0 0 36px 18px;
-            }
-            .welcome-title { font-size: 2.2rem; }
-            .welcome-hello { font-size: 1rem;}
-            .welcome-desc { font-size: 0.98rem;}
+        .slide-desc {
+            font-size: 1.11rem;
+            font-weight: 400;
+            margin-bottom: 1.4rem;
+            color: #eaeaea;
+            text-shadow: 0 1px 8px #000c;
+        }
+        /* Кнопка */
+        .slider-btn {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92vw;
+            max-width: 460px;
+            padding: 22px 0;
+            background: #fff;
+            color: #181B20;
+            font-weight: 800;
+            font-size: 1.28rem;
+            border: none;
+            border-radius: 22px;
+            letter-spacing: .01em;
+            cursor: pointer;
+            box-shadow: 0 3px 30px 0 #1a215b15;
+            z-index: 10;
+            transition: background 0.15s, color 0.15s, box-shadow 0.18s;
+        }
+        .slider-btn:active {
+            background: #ececec;
+            color: #404040;
+            box-shadow: 0 2px 9px #0004;
+        }
+        /* Индикаторы */
+        .slider-indicators {
+            position: absolute;
+            left: 0; right: 0;
+            bottom: 96px;
+            z-index: 9;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff5;
+            border: none;
+            transition: background 0.19s;
+        }
+        .indicator.active {
+            background: #0054ff;
+        }
+        @media (max-width: 520px) {
+            .slide-title { font-size: 1.16rem; }
+            .slide-content { padding-bottom: 80px;}
+            .slider-btn { padding: 17px 0; font-size: 1.07rem; }
+            .logo img { max-width: 112px;}
         }
     </style>
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                document.querySelector('.welcome-bg-video').classList.add('hide-bg');
-                document.querySelector('.welcome-content').classList.add('hide-content');
-                setTimeout(function() {
-                    window.location.href = "main.html";
-                }, 700);
-            }, 4000);
-        });
-    </script>
 </head>
 <body>
-    <!-- ВСТАВЬ СВОЁ ВИДЕО! (src=...) -->
-    <video class="welcome-bg-video" src="https://github.com/user-attachments/assets/600d019d-daa0-49d5-9ebb-85b142fc2d8e" autoplay loop muted playsinline></video>
-    <div class="welcome-content">
-        <div class="welcome-hello">
-            Приветствую в
-            <span>👋</span>
-        </div>
-        <div class="welcome-title">CarGuide</div>
-        <div class="welcome-desc">
-            Купите и продайте машину в пару кликов
-        </div>
+    <!-- Видео на фоне -->
+    <video class="welcome-bg-video" src="media/welcome-bg.mp4" autoplay loop muted playsinline></video>
+
+    <!-- Логотип -->
+    <div class="logo">
+        <img src="https://i.imgur.com/EJYhY8b.png" alt="CarGuide" />
+        <!-- Поменяй на свой лого -->
     </div>
+
+    <!-- Слайдер -->
+    <div class="slider-container" id="slider">
+        <!-- Слайды (добавляются из JS) -->
+    </div>
+
+    <!-- Индикаторы -->
+    <div class="slider-indicators" id="sliderIndicators"></div>
+    <!-- Кнопка -->
+    <button class="slider-btn" id="sliderBtn">Далее</button>
+
+    <script>
+        // ---- ДАННЫЕ ДЛЯ СЛАЙДОВ ----
+        const slides = [
+            {
+                title: "МЫ — АВТОМОБИЛЬНЫЙ МАРКЕТПЛЕЙС",
+                desc: "Каталог на 20 000+ автомобилей, проверенных по 256 пунктам."
+            },
+            {
+                title: "ОНЛАЙН-КРЕДИТ FRESH FINANCE",
+                desc: "Взять автомобиль в кредит так же легко, как заказать такси или еду."
+            },
+            {
+                title: "ОНЛАЙН-ОЦЕНКА И БЫСТРАЯ ПРОДАЖА",
+                desc: "Оценивайте свой авто в пару кликов и продавайте онлайн."
+            },
+            {
+                title: "КОНСЬЕРЖ-СЕРВИС С ЭКСПЕРТАМИ",
+                desc: "Пишите в чат, и команда экспертов ответит на любой вопрос про авто."
+            },
+            {
+                title: "ОБСЛУЖИВАНИЕ ВАШЕГО АВТО",
+                desc: "Запись на сервис и история визитов в личном кабинете."
+            }
+        ];
+
+        // ---- ГЕНЕРАЦИЯ СЛАЙДОВ ----
+        const slider = document.getElementById('slider');
+        const indicators = document.getElementById('sliderIndicators');
+        const btn = document.getElementById('sliderBtn');
+
+        slides.forEach((slide, idx) => {
+            const div = document.createElement('div');
+            div.className = 'slide';
+            div.innerHTML = `
+                <div class="slide-content">
+                    <div class="slide-title">${slide.title}</div>
+                    <div class="slide-desc">${slide.desc}</div>
+                </div>
+            `;
+            slider.appendChild(div);
+            // Индикатор
+            const ind = document.createElement('div');
+            ind.className = 'indicator' + (idx === 0 ? ' active' : '');
+            ind.onclick = () => scrollToSlide(idx);
+            indicators.appendChild(ind);
+        });
+
+        let current = 0;
+
+        function updateSlider() {
+            slider.scrollTo({left: current * window.innerWidth, behavior: 'smooth'});
+            document.querySelectorAll('.indicator').forEach((el, i) => {
+                el.classList.toggle('active', i === current);
+            });
+            btn.textContent = (current < slides.length - 1) ? 'Далее' : 'Погнали';
+        }
+
+        slider.addEventListener('scroll', () => {
+            const slideIdx = Math.round(slider.scrollLeft / window.innerWidth);
+            if (slideIdx !== current) {
+                current = slideIdx;
+                updateSlider();
+            }
+        });
+
+        btn.onclick = () => {
+            if (current < slides.length - 1) {
+                current += 1;
+                updateSlider();
+            } else {
+                window.location.href = 'main.html';
+            }
+        };
+
+        function scrollToSlide(idx) {
+            current = idx;
+            updateSlider();
+        }
+
+        window.addEventListener('resize', () => {
+            updateSlider();
+        });
+
+        updateSlider();
+    </script>
 </body>
 </html>
