@@ -5,16 +5,12 @@
     <title>Welcome | CarGuide</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Подключаем современные шрифты */
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;700&display=swap');
-
-        /* Базовые параметры страницы */
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
-            background: #181B20 !important;  /* Цвет фона на случай долгой загрузки картинки */
-            color: #fff !important;          /* Цвет текста по умолчанию */
+            background: #181B20 !important;
+            color: #fff !important;
         }
         body {
             min-height: 100vh;
@@ -23,54 +19,45 @@
             position: relative;
             overflow: hidden;
         }
-
-        /* Фоновая картинка welcome-экрана */
-        .welcome-bg {
+        .welcome-bg-video {
             position: fixed;
             z-index: 1;
             left: 0; top: 0; right: 0; bottom: 0;
             width: 100vw; height: 100vh;
-            background: url('https://i.pinimg.com/originals/e1/3c/59/e13c5916ff93f941c7257d9938a71b7a.jpg') center center / cover no-repeat;
-            filter: brightness(0.72);   /* Затемнение */
+            object-fit: cover;
+            filter: brightness(0.72);
             opacity: 1;
-            transition: opacity 0.7s cubic-bezier(.77,0,.18,1); /* Плавное исчезновение */
+            transition: opacity 0.7s cubic-bezier(.77,0,.18,1);
         }
-        /* Класс для плавного скрытия фона (добавляется через JS) */
-        .welcome-bg.hide-bg {
+        .welcome-bg-video.hide-bg {
             opacity: 0 !important;
         }
-
-        /* Блок с текстом приветствия */
         .welcome-content {
             position: relative;
             z-index: 2;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;      /* Прижимаем к низу экрана */
+            justify-content: flex-end;
             align-items: flex-start;
-            padding: 0 0 54px 34px;         /* Отступы */
+            padding: 0 0 54px 34px;
             box-sizing: border-box;
             opacity: 1;
-            transition: opacity 0.7s cubic-bezier(.77,0,.18,1), transform 0.7s cubic-bezier(.77,0,.18,1); /* Плавное исчезновение */
+            transition: opacity 0.7s cubic-bezier(.77,0,.18,1), transform 0.7s cubic-bezier(.77,0,.18,1);
         }
-        /* Класс для плавного скрытия приветственного блока */
         .welcome-content.hide-content {
             opacity: 0 !important;
             pointer-events: none;
             transform: translateY(30px) scale(0.99);
         }
-
-        /* Стили для заголовка */
         .welcome-title {
             font-family: 'Montserrat', Arial, sans-serif;
-            font-size: 3.2rem;      /* Размер шрифта заголовка CarGuide */
+            font-size: 3.2rem;
             font-weight: 900;
             margin-bottom: 10px;
             line-height: 1.06;
             letter-spacing: -1px;
         }
-        /* Приветственная строка */
         .welcome-hello {
             font-size: 1.4rem;
             font-weight: 700;
@@ -82,7 +69,6 @@
             font-size: 1.5rem;
             margin-left: 0.6rem;
         }
-        /* Подзаголовок */
         .welcome-desc {
             font-size: 1.02rem;
             font-family: 'Inter', Arial, sans-serif;
@@ -91,7 +77,6 @@
             margin-top: 16px;
             max-width: 350px;
         }
-        /* Мобильная адаптация */
         @media (max-width: 480px) {
             .welcome-content {
                 padding: 0 0 36px 18px;
@@ -102,24 +87,20 @@
         }
     </style>
     <script>
-        // Логика автоматического скрытия welcome через 4 секунды, с плавной анимацией (0.7 сек)
         window.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
-                // Добавляем классы, чтобы плавно скрыть фон и текст
-                document.querySelector('.welcome-bg').classList.add('hide-bg');
+                document.querySelector('.welcome-bg-video').classList.add('hide-bg');
                 document.querySelector('.welcome-content').classList.add('hide-content');
-                // После завершения анимации (0.7 сек), переходим на главную
                 setTimeout(function() {
-                    window.location.href = "main.html"; // Название главной страницы
+                    window.location.href = "main.html";
                 }, 700);
-            }, 4000); // 4000 мс = 4 секунды (можешь поменять задержку здесь)
+            }, 4000);
         });
     </script>
 </head>
 <body>
-    <!-- Фоновая картинка -->
-    <div class="welcome-bg"></div>
-    <!-- Блок с приветствием и описанием -->
+    <!-- ВСТАВЬ СВОЁ ВИДЕО! (src=...) -->
+    <video class="welcome-bg-video" src="https://disk.yandex.ru/i/OqpqoyD-y_hWhA" autoplay loop muted playsinline></video>
     <div class="welcome-content">
         <div class="welcome-hello">
             Приветствую в
