@@ -1,3 +1,23 @@
-<div class="logo">
-    <img src="media/logoza.ru (1).png" alt="CarGuide" style="max-width:210px; width:60vw; height:auto;">
-</div>
+<svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="carguide-gradient" x1="0" y1="0" x2="400" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ff3636"/>
+      <stop offset="33%" stop-color="#c93287"/>
+      <stop offset="70%" stop-color="#8a3eea"/>
+      <stop offset="100%" stop-color="#6868ff"/>
+    </linearGradient>
+  </defs>
+  <text
+    x="30" y="72"
+    font-family="Montserrat, Arial, sans-serif"
+    font-size="68"
+    font-weight="900"
+    font-style="italic"
+    fill="url(#carguide-gradient)"
+    stroke="white"
+    stroke-width="1"
+    letter-spacing="3"
+  >
+    CarGuide
+  </text>
+</svg>
