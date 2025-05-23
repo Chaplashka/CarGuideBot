@@ -26,20 +26,23 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            filter: brightness(0.74) saturate(1.1);
+            filter: brightness(0.75) saturate(1.08);
         }
         /* Логотип */
         .logo {
-            position: absolute;
-            top: 28px;
+            position: fixed;
+            z-index: 10;
+            top: 36px;
             left: 0;
             width: 100vw;
-            z-index: 2;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
         }
         .logo img {
-            max-width: 178px;
+            width: 164px;
             height: auto;
+            filter: drop-shadow(0 2px 16px #2227);
         }
         /* Слайдер */
         .slider-container {
@@ -57,107 +60,115 @@
         .slide {
             min-width: 100vw;
             height: 100vh;
-            position: relative;
             scroll-snap-align: start;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            transition: opacity 0.4s;
-            background: rgba(24,27,32,0.01); /* чтобы текст всегда читаем */
+            position: relative;
+            /* Градиент внизу */
+        }
+        /* Затемняющий градиент снизу */
+        .slide::after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            height: 45%;
+            z-index: 1;
+            background: linear-gradient(to top, #181B209a 60%, transparent 100%);
+            pointer-events: none;
         }
         .slide-content {
             position: relative;
             z-index: 4;
-            width: 100vw;
+            width: 92vw;
+            max-width: 480px;
+            margin: 0 auto;
             padding-bottom: 110px;
             color: #fff;
             text-align: center;
-            text-shadow: 0 2px 12px #000c;
+            text-shadow: 0 2px 16px #000b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .slide-title {
-            font-size: 2.1rem;
+            font-size: 1.32rem;
             font-weight: 900;
-            margin-bottom: 0.9rem;
-            letter-spacing: 0;
-            text-shadow: 0 2px 20px #0009;
+            margin-bottom: 0.8rem;
+            letter-spacing: .01em;
+            text-transform: uppercase;
+            text-shadow: 0 2px 24px #000c, 0 1px 4px #000b;
         }
         .slide-desc {
-            font-size: 1.11rem;
-            font-weight: 400;
-            margin-bottom: 1.4rem;
-            color: #eaeaea;
-            text-shadow: 0 1px 8px #000c;
+            font-size: 1.09rem;
+            font-weight: 500;
+            color: #ececec;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 1px 7px #000d;
         }
         /* Кнопка */
         .slider-btn {
-            position: absolute;
-            bottom: 32px;
+            position: fixed;
+            bottom: 22px;
             left: 50%;
             transform: translateX(-50%);
             width: 92vw;
-            max-width: 460px;
-            padding: 22px 0;
+            max-width: 470px;
+            padding: 20px 0 18px 0;
             background: #fff;
-            color: #181B20;
-            font-weight: 800;
-            font-size: 1.28rem;
+            color: #232e50;
+            font-weight: 900;
+            font-size: 1.34rem;
             border: none;
-            border-radius: 22px;
+            border-radius: 19px;
+            box-shadow: 0 3px 24px 0 #0004;
             letter-spacing: .01em;
             cursor: pointer;
-            box-shadow: 0 3px 30px 0 #1a215b15;
-            z-index: 10;
-            transition: background 0.15s, color 0.15s, box-shadow 0.18s;
+            z-index: 15;
         }
-        .slider-btn:active {
-            background: #ececec;
-            color: #404040;
-            box-shadow: 0 2px 9px #0004;
-        }
+        .slider-btn:active { background: #f5f5f5; color: #444; }
         /* Индикаторы */
         .slider-indicators {
-            position: absolute;
+            position: fixed;
             left: 0; right: 0;
-            bottom: 96px;
+            bottom: 70px;
             z-index: 9;
             display: flex;
             justify-content: center;
             gap: 10px;
         }
         .indicator {
-            width: 12px;
-            height: 12px;
+            width: 13px;
+            height: 13px;
             border-radius: 50%;
             background: #fff5;
             border: none;
-            transition: background 0.19s;
+            transition: background 0.17s;
         }
         .indicator.active {
-            background: #0054ff;
+            background: #2565f7;
         }
         @media (max-width: 520px) {
-            .slide-title { font-size: 1.16rem; }
-            .slide-content { padding-bottom: 80px;}
-            .slider-btn { padding: 17px 0; font-size: 1.07rem; }
-            .logo img { max-width: 112px;}
+            .logo img { width: 106px;}
+            .slide-title { font-size: 1.01rem; }
+            .slide-desc { font-size: 0.93rem;}
+            .slider-btn { font-size: 1.06rem;}
         }
     </style>
 </head>
 <body>
     <!-- Видео на фоне -->
-    <video class="welcome-bg-video" src="https://github.com/user-attachments/assets/600d019d-daa0-49d5-9ebb-85b142fc2d8e" autoplay loop muted playsinline></video>
+    <video class="welcome-bg-video" src="media/your_video.mp4" autoplay loop muted playsinline></video>
 
     <!-- Логотип -->
     <div class="logo">
-        <img src="https://i.imgur.com/EJYhY8b.png" alt="CarGuide" />
-        <!-- Поменяй на свой лого -->
+        <img src="media/logo.png" alt="CarGuide" />
+        <!-- Сюда вставь свой логотип (SVG или PNG с прозрачностью) -->
     </div>
 
     <!-- Слайдер -->
-    <div class="slider-container" id="slider">
-        <!-- Слайды (добавляются из JS) -->
-    </div>
+    <div class="slider-container" id="slider"></div>
 
     <!-- Индикаторы -->
     <div class="slider-indicators" id="sliderIndicators"></div>
@@ -165,7 +176,7 @@
     <button class="slider-btn" id="sliderBtn">Далее</button>
 
     <script>
-        // ---- ДАННЫЕ ДЛЯ СЛАЙДОВ ----
+        // ---- СЛАЙДЫ ----
         const slides = [
             {
                 title: "МЫ — АВТОМОБИЛЬНЫЙ МАРКЕТПЛЕЙС",
@@ -189,7 +200,7 @@
             }
         ];
 
-        // ---- ГЕНЕРАЦИЯ СЛАЙДОВ ----
+        // ---- ГЕНЕРАЦИЯ ----
         const slider = document.getElementById('slider');
         const indicators = document.getElementById('sliderIndicators');
         const btn = document.getElementById('sliderBtn');
@@ -204,7 +215,6 @@
                 </div>
             `;
             slider.appendChild(div);
-            // Индикатор
             const ind = document.createElement('div');
             ind.className = 'indicator' + (idx === 0 ? ' active' : '');
             ind.onclick = () => scrollToSlide(idx);
@@ -212,7 +222,6 @@
         });
 
         let current = 0;
-
         function updateSlider() {
             slider.scrollTo({left: current * window.innerWidth, behavior: 'smooth'});
             document.querySelectorAll('.indicator').forEach((el, i) => {
@@ -242,11 +251,9 @@
             current = idx;
             updateSlider();
         }
-
         window.addEventListener('resize', () => {
             updateSlider();
         });
-
         updateSlider();
     </script>
 </body>
