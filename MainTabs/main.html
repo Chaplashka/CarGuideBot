@@ -1,900 +1,243 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
-import { getFirestore, doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, onSnapshot, updateDoc, deleteDoc, serverTimestamp, setLogLevel } from 'firebase/firestore';
-
-// --- Firebase Конфигурация ---
-// В реальном окружении эти переменные будут предоставлены средой Canvas
-const firebaseConfigJson = typeof __firebase_config !== 'undefined' ? __firebase_config : JSON.stringify({
-  apiKey: "YOUR_API_KEY", // Замените на ваш ключ, если тестируете локально
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-});
-const firebaseConfig = JSON.parse(firebaseConfigJson);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-auto-club-app';
-
-// Инициализация Firebase
-let app;
-let auth;
-let db;
-
-try {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
-    setLogLevel('debug'); // Включаем подробное логирование Firestore для отладки
-    console.log("Firebase App initialized successfully.");
-} catch (error) {
-    console.error("Error initializing Firebase:", error);
-    // Можно отобразить сообщение об ошибке пользователю
-}
-
-
-// --- Иконки (простые SVG) ---
-const HomeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>;
-const CarSellIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5h14.25m-14.25 0V6.75A2.25 2.25 0 014.5 4.5h15a2.25 2.25 0 012.25 2.25v7.5m-17.25 4.5L6 12.75m0 0l6.75-6.75M6 12.75l6.75 6.75" /></svg>;
-const CarBuyIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>;
-const PartsRequestIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>;
-const MyListingsIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" /></svg>;
-const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>;
-const DeleteIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1"><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12.56 0c1.153 0 2.242.078 3.288.226m8.978 0L12 2.25m0 0L8.978 5.79m3.022 0L12 5.25m0 0V2.25m0 0L6 5.79M3.75 5.79h16.5M12 10.5h.008v.008H12V10.5z" /></svg>;
-const LogoutIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>;
-const CheckCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-green-500"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
-const ClockIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-yellow-500"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
-const XCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-red-500"><path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
-const InfoIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-500"><path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>;
-
-
-// --- Компоненты ---
-
-// Модальное окно для уведомлений
-const Modal = ({ message, type, onClose }) => {
-    if (!message) return null;
-
-    let bgColor, borderColor, textColor, IconComponent;
-
-    switch (type) {
-        case 'success':
-            bgColor = 'bg-green-100'; borderColor = 'border-green-400'; textColor = 'text-green-700'; IconComponent = CheckCircleIcon;
-            break;
-        case 'error':
-            bgColor = 'bg-red-100'; borderColor = 'border-red-400'; textColor = 'text-red-700'; IconComponent = XCircleIcon;
-            break;
-        case 'info':
-        default:
-            bgColor = 'bg-blue-100'; borderColor = 'border-blue-400'; textColor = 'text-blue-700'; IconComponent = InfoIcon;
-            break;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>CarGuide — Telegram WebApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Inter и иконки -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f8fafc;
+      margin: 0;
+      font-family: 'Inter', Arial, sans-serif;
+      color: #223143;
+      min-height: 100vh;
     }
-
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className={`rounded-lg shadow-xl p-6 w-full max-w-md ${bgColor} border ${borderColor}`}>
-                <div className="flex items-start">
-                    <div className="mr-3 pt-1">
-                        <IconComponent />
-                    </div>
-                    <p className={`text-lg ${textColor} mb-4`}>{message}</p>
-                </div>
-                <button
-                    onClick={onClose}
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-150"
-                >
-                    Закрыть
-                </button>
-            </div>
-        </div>
-    );
-};
-
-// Карточка объявления/заявки
-const ListingCard = ({ listing, type, onEdit, onDelete, showStatus = false }) => {
-    const getStatusChip = (status) => {
-        switch (status) {
-            case 'approved': return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><CheckCircleIcon /> Одобрено</span>;
-            case 'pending_moderation': return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><ClockIcon /> На модерации</span>;
-            case 'rejected': return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><XCircleIcon /> Отклонено</span>;
-            case 'new_request': return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"><InfoIcon /> Новая заявка</span>;
-            // Добавить другие статусы для заявок по необходимости (в работе, выполнена и т.д.)
-            default: return null;
-        }
-    };
-    
-    const isCar = type === 'car';
-    const isPartRequest = type === 'part_request';
-
-    return (
-        <div className="bg-white shadow-lg rounded-xl overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out">
-            {/* Заглушка для фото */}
-            <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
-                <span className="text-gray-500">
-                    {isCar ? 'Фото автомобиля' : isPartRequest ? 'Фото (если есть)' : 'Фото запчасти'}
-                </span>
-            </div>
-            <div className="p-4 md:p-6">
-                <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
-                    {isCar ? `${listing.make} ${listing.model}` : listing.partName}
-                </h3>
-                {isCar && (
-                    <>
-                        <p className="text-gray-600 text-sm mb-1">Год: {listing.year}</p>
-                        <p className="text-gray-600 text-sm mb-1">Пробег: {listing.mileage} км</p>
-                    </>
-                )}
-                {(type === 'part' || isPartRequest) && ( // 'part' - старый тип, если остался где-то
-                    <p className="text-gray-600 text-sm mb-1">Состояние: {listing.condition === 'new' ? 'Новая' : 'Б/У'}</p>
-                )}
-                {listing.price && !isPartRequest && ( // Цена только для продажи авто/запчастей, не для заявок
-                     <p className="text-green-600 font-semibold text-lg md:text-xl my-2">{listing.price} ₽</p>
-                )}
-                <p className="text-gray-700 text-sm mb-3 h-16 overflow-y-auto">{listing.description}</p>
-                {showStatus && listing.status && (
-                    <div className="my-2">
-                        {getStatusChip(listing.status)}
-                    </div>
-                )}
-                {(onEdit || onDelete) && (
-                     <div className="flex space-x-2 mt-4">
-                        {onEdit && (
-                            <button
-                                onClick={() => onEdit(listing)}
-                                className="flex items-center justify-center w-1/2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-3 rounded-lg transition duration-150 text-sm"
-                            >
-                                <EditIcon /> Редактировать
-                            </button>
-                        )}
-                        {onDelete && (
-                            <button
-                                onClick={() => onDelete(listing.id, type)}
-                                className="flex items-center justify-center w-1/2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-3 rounded-lg transition duration-150 text-sm"
-                            >
-                                <DeleteIcon /> Удалить
-                            </button>
-                        )}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
-
-// Общий компонент формы
-const FormField = ({ id, label, type = 'text', value, onChange, required = false, options, placeholder, rows }) => (
-    <div className="mb-4">
-        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label}{required && <span className="text-red-500">*</span>}</label>
-        {type === 'select' ? (
-            <select
-                id={id}
-                name={id}
-                value={value}
-                onChange={onChange}
-                required={required}
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-                {options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-            </select>
-        ) : type === 'textarea' ? (
-             <textarea
-                id={id}
-                name={id}
-                rows={rows || 3}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                required={required}
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-        ) : (
-            <input
-                type={type}
-                id={id}
-                name={id}
-                value={value}
-                onChange={onChange}
-                required={required}
-                placeholder={placeholder}
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-        )}
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px 32px 16px;
+    }
+    .header {
+      text-align: center;
+      margin: 26px 0 14px 0;
+    }
+    .logo {
+      font-weight: 900;
+      color: #2565f7;
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+      font-style: italic;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: #4c5c74;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    /* Быстрые действия */
+    .actions-row {
+      display: flex;
+      gap: 11px;
+      margin: 17px 0 19px 0;
+    }
+    .action {
+      flex: 1;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px #2565f709;
+      padding: 15px 0 10px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: box-shadow .14s, transform .15s;
+    }
+    .action:active { box-shadow: 0 1px 5px #2565f733; transform: scale(0.97);}
+    .action .ri {
+      font-size: 1.68rem;
+      color: #2565f7;
+      margin-bottom: 4px;
+    }
+    .action-label {
+      font-size: 0.99rem;
+      font-weight: 700;
+      color: #222;
+    }
+    /* Поиск */
+    .search-block {
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: 0 1px 8px #0001;
+      display: flex;
+      align-items: center;
+      padding: 13px 15px;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .search-block .ri { color: #2565f7; font-size: 1.1rem;}
+    .search-input {
+      border: none;
+      outline: none;
+      background: none;
+      font-size: 1rem;
+      flex: 1;
+      font-family: inherit;
+      color: #223143;
+    }
+    /* Популярные марки */
+    .brands-block { margin-bottom: 25px; }
+    .brands-title { font-size: 1.06rem; font-weight: 700; color: #344056; margin-bottom: 8px;}
+    .brands-row {
+      display: flex; gap: 15px;
+      overflow-x: auto; padding-bottom: 6px;
+    }
+    .brand {
+      background: #fff;
+      border-radius: 50%;
+      width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 7px #0001;
+      margin-bottom: 2px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: box-shadow .16s;
+    }
+    .brand:active { box-shadow: 0 0px 3px #2565f719;}
+    .brand img {
+      width: 32px; height: 32px; object-fit: contain;
+    }
+    /* Карточки авто */
+    .cars-title {
+      font-size: 1.09rem;
+      font-weight: 700;
+      color: #344056;
+      margin-bottom: 8px;
+      margin-top: 28px;
+    }
+    .car-card {
+      background: #fff;
+      border-radius: 17px;
+      box-shadow: 0 2px 13px #2565f714;
+      padding: 15px 17px;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      transition: box-shadow .13s;
+      cursor: pointer;
+    }
+    .car-card:active { box-shadow: 0 2px 7px #2565f728;}
+    .car-img {
+      width: 60px; height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #eceff3;
+    }
+    .car-info { flex: 1;}
+    .car-title { font-size: 1.01rem; font-weight: 800;}
+    .car-meta { color: #7e92af; font-size: 0.98rem;}
+    .car-price { font-size: 1.02rem; font-weight: 700; color: #2565f7; margin-top: 3px;}
+    /* Нижнее меню */
+    .bottom-nav {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: #fff;
+      border-top: 1px solid #f2f4f8;
+      box-shadow: 0 -2px 10px #0002;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 99;
+    }
+    .nav-btn {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: #2565f7;
+      font-size: 1.43rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color .13s;
+    }
+    .nav-btn span { font-size: 0.84rem; margin-top: 1px;}
+    .nav-btn.inactive { color: #a9b5c8; }
+    @media (max-width: 520px) {
+      .container { max-width: 99vw; padding: 0 2vw 56px 2vw;}
+      .header { margin-top: 13px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Логотип и слоган -->
+    <div class="header">
+      <div class="logo">CarGuide</div>
+      <div class="subtitle">Маркетплейс автомобилей.<br>Покупайте и продавайте авто — удобно и быстро!</div>
     </div>
-);
-
-// --- Страницы ---
-const HomePage = ({ setCurrentPage, userId }) => {
-    const [carListings, setCarListings] = useState([]);
-    // Удаляем partListings, так как запчасти теперь только запрашиваются
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        if (!db || !userId) {
-            setLoading(false);
-            setError("Firebase не инициализирован или пользователь не аутентифицирован.");
-            return;
-        }
-        setLoading(true);
-
-        const carListingsRef = collection(db, `/artifacts/${appId}/public/data/car_listings`);
-        const qCars = query(carListingsRef, where("status", "==", "approved"));
-        const unsubscribeCars = onSnapshot(qCars, (snapshot) => {
-            const cars = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setCarListings(cars);
-            setLoading(false);
-        }, (err) => {
-            console.error("Ошибка загрузки объявлений авто: ", err);
-            setError("Не удалось загрузить объявления автомобилей.");
-            setLoading(false);
-        });
-
-        // Удаляем загрузку объявлений о продаже запчастей
-        return () => {
-            unsubscribeCars();
-        };
-    }, [userId]);
-
-    if (loading) return <div className="text-center p-10">Загрузка актуальных предложений...</div>;
-    if (error) return <div className="text-center p-10 text-red-500">{error}</div>;
-
-    return (
-        <div className="p-4">
-            <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Добро пожаловать в АвтоКлуб!</h1>
-            
-            <section className="mb-12">
-                <h2 className="text-2xl font-semibold text-gray-700 mb-6 border-b-2 border-indigo-500 pb-2">Автомобили в продаже</h2>
-                {carListings.length === 0 ? (
-                    <p className="text-gray-600">Пока нет одобренных объявлений о продаже автомобилей.</p>
-                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {carListings.map(listing => <ListingCard key={listing.id} listing={listing} type="car" />)}
-                    </div>
-                )}
-            </section>
-
-            {/* Раздел "Запчасти в продаже" удален */}
-        </div>
-    );
-};
-
-const SellCarPage = ({ setCurrentPage, userId, setModalMessage }) => {
-    const [formData, setFormData] = useState({
-        make: '', model: '', year: '', mileage: '', price: '', description: '', photos: []
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handlePhotoUpload = (e) => {
-        setModalMessage({ text: "Загрузка фото пока не реализована в этом примере.", type: "info" });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!userId) {
-            setModalMessage({ text: "Ошибка: Пользователь не аутентифицирован.", type: "error" });
-            return;
-        }
-        if (!db) {
-            setModalMessage({ text: "Ошибка: База данных не инициализирована.", type: "error" });
-            return;
-        }
-        setIsSubmitting(true);
-        try {
-            const carListingsRef = collection(db, `/artifacts/${appId}/public/data/car_listings`);
-            await addDoc(carListingsRef, {
-                ...formData,
-                year: parseInt(formData.year),
-                mileage: parseInt(formData.mileage),
-                price: parseFloat(formData.price),
-                sellerId: userId,
-                status: 'pending_moderation', 
-                submittedAt: serverTimestamp()
-            });
-            setModalMessage({ text: "Объявление отправлено на модерацию!", type: "success" });
-            setFormData({ make: '', model: '', year: '', mileage: '', price: '', description: '', photos: [] });
-            setCurrentPage('home');
-        } catch (error) {
-            console.error("Ошибка добавления объявления: ", error);
-            setModalMessage({ text: `Ошибка: ${error.message}`, type: "error" });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="p-4 max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Продать автомобиль</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
-                <FormField id="make" label="Марка" value={formData.make} onChange={handleChange} required placeholder="Например, Toyota" />
-                <FormField id="model" label="Модель" value={formData.model} onChange={handleChange} required placeholder="Например, Camry" />
-                <FormField id="year" label="Год выпуска" type="number" value={formData.year} onChange={handleChange} required placeholder="Например, 2020" />
-                <FormField id="mileage" label="Пробег (км)" type="number" value={formData.mileage} onChange={handleChange} required placeholder="Например, 50000" />
-                <FormField id="price" label="Цена (₽)" type="number" value={formData.price} onChange={handleChange} required placeholder="Например, 1500000" />
-                <FormField id="description" label="Описание" type="textarea" value={formData.description} onChange={handleChange} required placeholder="Подробное описание автомобиля..." />
-                
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Фотографии</label>
-                    <input type="file" multiple onChange={handlePhotoUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
-                    <p className="text-xs text-gray-500 mt-1">Можно загрузить несколько фото. Функционал в разработке.</p>
-                </div>
-
-                <button type="submit" disabled={isSubmitting} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-150 disabled:opacity-50">
-                    {isSubmitting ? "Отправка..." : "Отправить на модерацию"}
-                </button>
-            </form>
-        </div>
-    );
-};
-
-
-const BuyCarPage = ({ setCurrentPage, userId, setModalMessage }) => {
-    const [formData, setFormData] = useState({
-        make: '', model: '', year_from: '', year_to: '', budget: '', comments: ''
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!userId) {
-            setModalMessage({ text: "Ошибка: Пользователь не аутентифицирован.", type: "error" });
-            return;
-        }
-        if (!db) {
-            setModalMessage({ text: "Ошибка: База данных не инициализирована.", type: "error" });
-            return;
-        }
-        setIsSubmitting(true);
-        try {
-            const buyRequestsRef = collection(db, `/artifacts/${appId}/users/${userId}/buy_car_requests`); // Уточнил коллекцию
-            await addDoc(buyRequestsRef, {
-                ...formData,
-                year_from: formData.year_from ? parseInt(formData.year_from) : null,
-                year_to: formData.year_to ? parseInt(formData.year_to) : null,
-                budget: formData.budget ? parseFloat(formData.budget) : null,
-                requesterId: userId, // Изменено с buyerId для единообразия
-                submittedAt: serverTimestamp(),
-                status: 'new_request' // Статус для заявок на покупку
-            });
-            setModalMessage({ text: "Заявка на покупку успешно отправлена!", type: "success" });
-            setFormData({ make: '', model: '', year_from: '', year_to: '', budget: '', comments: '' });
-            setCurrentPage('home');
-        } catch (error) {
-            console.error("Ошибка отправки заявки на покупку: ", error);
-            setModalMessage({ text: `Ошибка: ${error.message}`, type: "error" });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    
-    return (
-        <div className="p-4 max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Оставить заявку на покупку автомобиля</h1>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
-                <FormField id="make" label="Желаемая марка" value={formData.make} onChange={handleChange} placeholder="Например, BMW" />
-                <FormField id="model" label="Желаемая модель" value={formData.model} onChange={handleChange} placeholder="Например, X5" />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField id="year_from" label="Год выпуска от" type="number" value={formData.year_from} onChange={handleChange} placeholder="2018" />
-                    <FormField id="year_to" label="Год выпуска до" type="number" value={formData.year_to} onChange={handleChange} placeholder="2022" />
-                </div>
-                <FormField id="budget" label="Бюджет (₽)" type="number" value={formData.budget} onChange={handleChange} placeholder="Например, 2500000" />
-                <FormField id="comments" label="Дополнительные комментарии" type="textarea" value={formData.comments} onChange={handleChange} placeholder="Цвет, комплектация, особые пожелания..." />
-                
-                <button type="submit" disabled={isSubmitting} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-150 disabled:opacity-50">
-                    {isSubmitting ? "Отправка..." : "Отправить заявку"}
-                </button>
-            </form>
-        </div>
-    );
-};
-
-// Новая страница для заявки на запчасти
-const RequestPartsPage = ({ setCurrentPage, userId, setModalMessage }) => {
-    const [formData, setFormData] = useState({
-        partName: '', // Будет основным полем для описания
-        condition: 'used', 
-        vehicleInfo: '', // Для информации об авто (VIN, марка/модель/год)
-        description: '', // Дополнительные детали проблемы/потребности
-        photos: []
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-    
-    const handlePhotoUpload = (e) => {
-        setModalMessage({ text: "Загрузка фото пока не реализована в этом примере.", type: "info" });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!userId) {
-            setModalMessage({ text: "Ошибка: Пользователь не аутентифицирован.", type: "error" });
-            return;
-        }
-        if (!db) {
-            setModalMessage({ text: "Ошибка: База данных не инициализирована.", type: "error" });
-            return;
-        }
-        if (!formData.partName.trim() || !formData.description.trim()) {
-             setModalMessage({ text: "Пожалуйста, подробно опишите запчасть и вашу потребность.", type: "error" });
-            return;
-        }
-        setIsSubmitting(true);
-        try {
-            // Заявки на запчасти сохраняются в общей коллекции (для обработки админами)
-            // или в пользовательской, если это личные запросы.
-            // Для примера, сделаем общую, как car_listings, но с другим путем.
-            const partRequestsRef = collection(db, `/artifacts/${appId}/public/data/part_requests`);
-            await addDoc(partRequestsRef, {
-                ...formData,
-                requesterId: userId,
-                status: 'new_request', // Статус новой заявки
-                submittedAt: serverTimestamp()
-            });
-            setModalMessage({ text: "Заявка на запчасть успешно отправлена! Ожидайте ответа.", type: "success" });
-            setFormData({ partName: '', condition: 'used', vehicleInfo: '', description: '', photos: [] });
-            setCurrentPage('home'); // Или на страницу "Мои заявки"
-        } catch (error) {
-            console.error("Ошибка отправки заявки на запчасть: ", error);
-            setModalMessage({ text: `Ошибка: ${error.message}`, type: "error" });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="p-4 max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Оставить заявку на запчасть</h1>
-            <p className="text-sm text-gray-600 mb-6">
-                Опишите как можно подробнее, какая запчасть вам нужна, для какого автомобиля, или какая у вас проблема. 
-                Это поможет нам быстрее и точнее подобрать необходимое или предоставить консультацию.
-            </p>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
-                <FormField 
-                    id="partName" 
-                    label="Что ищете? (Название запчасти, симптом проблемы)" 
-                    type="textarea"
-                    rows={3}
-                    value={formData.partName} 
-                    onChange={handleChange} 
-                    required 
-                    placeholder="Например: Передний левый амортизатор, или 'Стучит подвеска спереди слева при проезде неровностей'" 
-                />
-                <FormField 
-                    id="vehicleInfo" 
-                    label="Информация о вашем автомобиле (Марка, Модель, Год, VIN - если знаете)" 
-                    type="textarea"
-                    rows={2}
-                    value={formData.vehicleInfo} 
-                    onChange={handleChange} 
-                    placeholder="Например: Toyota Camry 2019, VIN XXXXX..." 
-                />
-                <FormField 
-                    id="condition" 
-                    label="Желаемое состояние запчасти" 
-                    type="select" 
-                    value={formData.condition} 
-                    onChange={handleChange} 
-                    options={[{value: 'any', label: 'Любое'}, {value: 'used', label: 'Б/У'}, {value: 'new', label: 'Новая'}]}
-                    required 
-                />
-                <FormField 
-                    id="description" 
-                    label="Дополнительные детали и комментарии" 
-                    type="textarea" 
-                    rows={4}
-                    value={formData.description} 
-                    onChange={handleChange} 
-                    required
-                    placeholder="Опишите подробности: номер запчасти (если известен), предпочтения по производителю, срочность, или любые другие важные детали." 
-                />
-                
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Фото (если есть)</label>
-                    <input type="file" multiple onChange={handlePhotoUpload} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
-                    <p className="text-xs text-gray-500 mt-1">Можно прикрепить фото проблемной детали, места установки или примера. Функционал в разработке.</p>
-                </div>
-
-                <button type="submit" disabled={isSubmitting} className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg transition duration-150 disabled:opacity-50">
-                    {isSubmitting ? "Отправка..." : "Отправить заявку"}
-                </button>
-            </form>
-        </div>
-    );
-};
-
-const MyListingsPage = ({ setCurrentPage, userId, setModalMessage }) => {
-    const [myCarListings, setMyCarListings] = useState([]);
-    const [myPartRequests, setMyPartRequests] = useState([]); // Изменено с partListings
-    const [editingItem, setEditingItem] = useState(null); // { type: 'car'/'part_request', data: {...} }
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const fetchItems = useCallback(() => {
-        if (!db || !userId) {
-            setLoading(false);
-            setError("Firebase не инициализирован или пользователь не аутентифицирован.");
-            return;
-        }
-        setLoading(true);
-        let activeListeners = 0;
-        const doneLoading = () => {
-            activeListeners--;
-            if (activeListeners === 0) {
-                setLoading(false);
-            }
-        };
-
-        activeListeners++;
-        const carQuery = query(collection(db, `/artifacts/${appId}/public/data/car_listings`), where("sellerId", "==", userId));
-        const unsubscribeCars = onSnapshot(carQuery, (snapshot) => {
-            setMyCarListings(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-            doneLoading();
-        }, (err) => {
-            console.error("Ошибка загрузки моих объявлений авто:", err);
-            setError(prev => prev ? `${prev}\nНе удалось загрузить ваши объявления автомобилей.` : "Не удалось загрузить ваши объявления автомобилей.");
-            doneLoading();
-        });
-
-        activeListeners++;
-        // Загружаем заявки на запчасти пользователя
-        const partRequestQuery = query(collection(db, `/artifacts/${appId}/public/data/part_requests`), where("requesterId", "==", userId));
-        const unsubscribePartRequests = onSnapshot(partRequestQuery, (snapshot) => {
-            setMyPartRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-            doneLoading();
-        }, (err) => {
-            console.error("Ошибка загрузки моих заявок на запчасти:", err);
-            setError(prev => prev ? `${prev}\nНе удалось загрузить ваши заявки на запчасти.` : "Не удалось загрузить ваши заявки на запчасти.");
-            doneLoading();
-        });
-        
-        return () => {
-            unsubscribeCars();
-            unsubscribePartRequests();
-        };
-    }, [userId]);
-
-    useEffect(() => {
-        const unsubscribe = fetchItems();
-        return unsubscribe;
-    }, [fetchItems]);
-
-
-    const handleEdit = (item) => {
-        // Определяем тип: 'car' или 'part_request'
-        const type = item.make ? 'car' : 'part_request'; 
-        setEditingItem({ type, data: item });
-    };
-
-    const handleDelete = async (itemId, itemType) => {
-        if (!db) {
-             setModalMessage({ text: "Ошибка: База данных не инициализирована.", type: "error" });
-             return;
-        }
-        const collectionName = itemType === 'car' ? 'car_listings' : 'part_requests';
-        const docRef = doc(db, `/artifacts/${appId}/public/data/${collectionName}`, itemId);
-        
-        // TODO: Заменить window.confirm на кастомный Modal компонент для подтверждения
-        if (window.confirm(`Вы уверены, что хотите удалить ${itemType === 'car' ? 'это объявление' : 'эту заявку'}?`)) { 
-            try {
-                await deleteDoc(docRef);
-                setModalMessage({ text: `${itemType === 'car' ? 'Объявление' : 'Заявка'} успешно удален${itemType === 'car' ? 'о' : 'а'}.`, type: "success" });
-            } catch (error) {
-                console.error(`Ошибка удаления ${itemType}: `, error);
-                setModalMessage({ text: `Ошибка удаления: ${error.message}`, type: "error" });
-            }
-        }
-    };
-    
-    const handleUpdateItem = async (e) => {
-        e.preventDefault();
-        if (!db || !editingItem) return;
-        
-        const { type, data } = editingItem;
-        const collectionName = type === 'car' ? 'car_listings' : 'part_requests';
-        const docRef = doc(db, `/artifacts/${appId}/public/data/${collectionName}`, data.id);
-        
-        let updatedData = { ...data }; // Копируем существующие данные
-        delete updatedData.id; // Не обновляем ID документа
-        
-        if (type === 'car') {
-            updatedData.year = parseInt(data.year);
-            updatedData.mileage = parseInt(data.mileage);
-            updatedData.price = parseFloat(data.price);
-            updatedData.status = 'pending_moderation'; // При редактировании авто снова на модерацию
-        } else if (type === 'part_request') {
-            // Для заявок на запчасти, возможно, статус тоже должен меняться или просто обновляются поля
-            // updatedData.status = 'updated_request'; // Пример
-        }
-        updatedData.updatedAt = serverTimestamp();
-
-        try {
-            await updateDoc(docRef, updatedData);
-            setModalMessage({ text: `${type === 'car' ? 'Объявление' : 'Заявка'} успешно обновлен${type === 'car' ? 'о' : 'а'}. ${type === 'car' ? 'Отправлено на модерацию.' : ''}`, type: "success" });
-            setEditingItem(null);
-        } catch (error) {
-            console.error(`Ошибка обновления ${type}: `, error);
-            setModalMessage({ text: `Ошибка обновления: ${error.message}`, type: "error" });
-        }
-    };
-
-    if (loading) return <div className="text-center p-10">Загрузка ваших данных...</div>;
-    if (error && !myCarListings.length && !myPartRequests.length) return <div className="text-center p-10 text-red-500">{error}</div>;
-
-
-    // Форма редактирования (модальное окно)
-    if (editingItem) {
-        const {type, data} = editingItem;
-        return (
-            <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-40 overflow-y-auto">
-                <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-                    <h2 className="text-xl font-bold mb-4">Редактировать {type === 'car' ? 'объявление' : 'заявку на запчасть'}</h2>
-                    <form onSubmit={handleUpdateItem} className="space-y-4">
-                        {type === 'car' && (
-                            <>
-                                <FormField id="edit_make" label="Марка" value={data.make} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, make: e.target.value}}))} required />
-                                <FormField id="edit_model" label="Модель" value={data.model} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, model: e.target.value}}))} required />
-                                <FormField id="edit_year" label="Год" type="number" value={data.year} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, year: e.target.value}}))} required />
-                                <FormField id="edit_mileage" label="Пробег" type="number" value={data.mileage} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, mileage: e.target.value}}))} required />
-                                <FormField id="edit_price" label="Цена" type="number" value={data.price} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, price: e.target.value}}))} required />
-                                <FormField id="edit_description_car" label="Описание" type="textarea" value={data.description} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, description: e.target.value}}))} required />
-                            </>
-                        )}
-                        {type === 'part_request' && (
-                             <>
-                                <FormField id="edit_partName" label="Что ищете?" type="textarea" rows={3} value={data.partName} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, partName: e.target.value}}))} required />
-                                <FormField id="edit_vehicleInfo" label="Информация об авто" type="textarea" rows={2} value={data.vehicleInfo || ''} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, vehicleInfo: e.target.value}}))} />
-                                <FormField 
-                                    id="edit_condition" 
-                                    label="Состояние" 
-                                    type="select" 
-                                    value={data.condition} 
-                                    onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, condition: e.target.value}}))}
-                                    options={[{value: 'any', label: 'Любое'}, {value: 'used', label: 'Б/У'}, {value: 'new', label: 'Новая'}]}
-                                    required 
-                                />
-                                <FormField id="edit_description_part" label="Дополнительные детали" type="textarea" rows={4} value={data.description} onChange={e => setEditingItem(prev => ({...prev, data: {...prev.data, description: e.target.value}}))} required />
-                             </>
-                        )}
-                        
-                        <div className="flex space-x-2 pt-2">
-                            <button type="submit" className="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg">Сохранить</button>
-                            <button type="button" onClick={() => setEditingItem(null)} className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg">Отмена</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        );
-    }
-
-    return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Мои объявления и заявки</h1>
-            {error && <p className="text-red-500 bg-red-100 p-3 rounded-md mb-4">{error}</p>}
-            <section className="mb-8">
-                <h2 className="text-xl font-semibold text-gray-700 mb-4">Автомобили на продажу</h2>
-                {myCarListings.length === 0 && !loading ? <p className="text-gray-600">У вас нет активных объявлений о продаже автомобилей.</p> : null}
-                {myCarListings.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {myCarListings.map(l => <ListingCard key={l.id} listing={l} type="car" onEdit={handleEdit} onDelete={handleDelete} showStatus={true} />)}
-                    </div>
-                )}
-            </section>
-            <section>
-                <h2 className="text-xl font-semibold text-gray-700 mb-4">Мои заявки на запчасти</h2>
-                {myPartRequests.length === 0 && !loading ? <p className="text-gray-600">У вас нет активных заявок на запчасти.</p> : null}
-                {myPartRequests.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {myPartRequests.map(l => <ListingCard key={l.id} listing={l} type="part_request" onEdit={handleEdit} onDelete={handleDelete} showStatus={true} />)}
-                    </div>
-                )}
-            </section>
-        </div>
-    );
-};
-
-
-// --- Основной компонент приложения ---
-function App() {
-    const [currentPage, setCurrentPage] = useState('home');
-    const [currentUser, setCurrentUser] = useState(null);
-    const [userId, setUserId] = useState(null);
-    const [isAuthReady, setIsAuthReady] = useState(false);
-    const [modalMessage, setModalMessageContent] = useState({ text: '', type: '' }); 
-
-    const setModalMessage = (message) => {
-        setModalMessageContent(message);
-    };
-    
-    const clearModalMessage = () => {
-        setModalMessageContent({ text: '', type: '' });
-    };
-
-    useEffect(() => {
-        if (!auth) {
-            console.error("Firebase Auth is not initialized.");
-            setIsAuthReady(true); 
-            setModalMessage({ text: "Критическая ошибка: Сервис аутентификации не доступен.", type: "error"});
-            return;
-        }
-
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                setCurrentUser(user);
-                setUserId(user.uid);
-                console.log("User is signed in:", user.uid);
-                
-                const userDocRef = doc(db, `/artifacts/${appId}/users`, user.uid);
-                try {
-                    const userDocSnap = await getDoc(userDocRef);
-                    if (!userDocSnap.exists()) {
-                        await setDoc(userDocRef, {
-                            uid: user.uid,
-                            displayName: user.displayName || `User-${user.uid.substring(0,5)}`,
-                            email: user.email, 
-                            createdAt: serverTimestamp(),
-                            lastLoginAt: serverTimestamp(),
-                        });
-                        console.log("User document created in Firestore for UID:", user.uid);
-                    } else {
-                        await updateDoc(userDocRef, {
-                            lastLoginAt: serverTimestamp()
-                        });
-                    }
-                } catch (e) {
-                     console.error("Error handling user document in Firestore:", e);
-                }
-
-            } else {
-                setCurrentUser(null);
-                setUserId(null);
-                console.log("User is signed out. Attempting to sign in...");
-                const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                if (initialToken) {
-                    try {
-                        await signInWithCustomToken(auth, initialToken);
-                        console.log("Signed in with custom token.");
-                    } catch (error) {
-                        console.error("Error signing in with custom token, trying anonymous:", error);
-                        try {
-                            await signInAnonymously(auth);
-                            console.log("Signed in anonymously after custom token failed.");
-                        } catch (anonError) {
-                            console.error("Error signing in anonymously:", anonError);
-                            setModalMessage({ text: "Ошибка аутентификации. Попробуйте перезапустить приложение.", type: "error"});
-                        }
-                    }
-                } else {
-                     try {
-                        await signInAnonymously(auth);
-                        console.log("Signed in anonymously.");
-                    } catch (error) {
-                        console.error("Error signing in anonymously:", error);
-                        setModalMessage({ text: "Ошибка аутентификации. Попробуйте перезапустить приложение.", type: "error"});
-                    }
-                }
-            }
-            setIsAuthReady(true);
-        });
-
-        return () => unsubscribe();
-    }, []);
-    
-    useEffect(() => {
-        if (window.Telegram && window.Telegram.WebApp) {
-            const tg = window.Telegram.WebApp;
-            tg.ready(); 
-            console.log("Telegram WebApp SDK initialized", tg);
-        } else {
-            console.warn("Telegram WebApp SDK not found. Running in browser mode.");
-        }
-    }, []);
-
-
-    const handleSignOut = async () => {
-        if (!auth) return;
-        try {
-            await signOut(auth);
-            setCurrentPage('home'); 
-            setModalMessage({ text: "Вы успешно вышли из системы.", type: "info"});
-        } catch (error) {
-            console.error("Ошибка выхода:", error);
-            setModalMessage({ text: `Ошибка выхода: ${error.message}`, type: "error"});
-        }
-    };
-
-    const renderPage = () => {
-        if (!isAuthReady) {
-            return <div className="flex items-center justify-center h-screen"><div className="text-xl font-semibold">Инициализация приложения...</div></div>;
-        }
-        if (!userId && isAuthReady) { 
-             return (
-                <div className="flex flex-col items-center justify-center h-screen p-4 text-center">
-                    <h1 className="text-2xl font-bold text-red-600 mb-4">Ошибка Аутентификации</h1>
-                    <p className="text-gray-700 mb-6">Не удалось войти в систему. Пожалуйста, убедитесь, что вы запускаете приложение через Telegram и попробуйте снова.</p>
-                    <button 
-                        onClick={() => window.location.reload()} 
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg"
-                    >
-                        Перезагрузить
-                    </button>
-                </div>
-            );
-        }
-
-        switch (currentPage) {
-            case 'home':
-                return <HomePage setCurrentPage={setCurrentPage} userId={userId} />;
-            case 'sell-car':
-                return <SellCarPage setCurrentPage={setCurrentPage} userId={userId} setModalMessage={setModalMessage} />;
-            case 'buy-car':
-                return <BuyCarPage setCurrentPage={setCurrentPage} userId={userId} setModalMessage={setModalMessage} />;
-            case 'request-parts': // Изменено с sell-parts
-                return <RequestPartsPage setCurrentPage={setCurrentPage} userId={userId} setModalMessage={setModalMessage} />;
-            case 'my-listings':
-                return <MyListingsPage setCurrentPage={setCurrentPage} userId={userId} setModalMessage={setModalMessage} />;
-            default:
-                return <HomePage setCurrentPage={setCurrentPage} userId={userId} />;
-        }
-    };
-
-    const NavButton = ({ page, label, icon }) => (
-        <button
-            onClick={() => setCurrentPage(page)}
-            className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-150 w-full text-center
-                        ${currentPage === page ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 hover:bg-indigo-100 hover:text-indigo-700'}`}
-            title={label}
-        >
-            {icon}
-            <span className="text-xs mt-1">{label}</span>
-        </button>
-    );
-
-    return (
-        <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
-            <header className="bg-white shadow-md sticky top-0 z-30">
-                <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-indigo-700 cursor-pointer" onClick={() => setCurrentPage('home')}>АвтоКлуб</h1>
-                    <div className="text-xs text-gray-500">
-                        {userId && `ID: ${userId.substring(0,8)}...`}
-                    </div>
-                    {currentUser && (
-                        <button onClick={handleSignOut} title="Выйти" className="text-gray-500 hover:text-red-600">
-                            <LogoutIcon />
-                        </button>
-                    )}
-                </div>
-            </header>
-
-            <main className="flex-grow container mx-auto px-0 sm:px-4 py-4">
-                {renderPage()}
-            </main>
-
-            <nav className="bg-white shadow-t-md sticky bottom-0 z-30 border-t border-gray-200">
-                <div className="container mx-auto px-2 py-2 grid grid-cols-5 gap-1">
-                    <NavButton page="home" label="Главная" icon={<HomeIcon />} />
-                    <NavButton page="sell-car" label="Продать Авто" icon={<CarSellIcon />} />
-                    <NavButton page="buy-car" label="Купить Авто" icon={<CarBuyIcon />} />
-                    <NavButton page="request-parts" label="Заявка Запчасти" icon={<PartsRequestIcon />} /> 
-                    <NavButton page="my-listings" label="Мои Данные" icon={<MyListingsIcon />} />
-                </div>
-            </nav>
-            
-            <Modal message={modalMessage.text} type={modalMessage.type} onClose={clearModalMessage} />
-        </div>
-    );
-}
-
-export default App;
-
+    <!-- Быстрые действия -->
+    <div class="actions-row">
+      <div class="action" onclick="alert('Купить авто')">
+        <i class="ri-shopping-cart-2-line"></i>
+        <div class="action-label">Купить</div>
+      </div>
+      <div class="action" onclick="alert('Продать авто')">
+        <i class="ri-money-dollar-circle-line"></i>
+        <div class="action-label">Продать</div>
+      </div>
+      <div class="action" onclick="alert('Заявки')">
+        <i class="ri-list-check-3"></i>
+        <div class="action-label">Заявки</div>
+      </div>
+      <div class="action" onclick="alert('Сервис')">
+        <i class="ri-tools-line"></i>
+        <div class="action-label">Сервис</div>
+      </div>
+    </div>
+    <!-- Поиск -->
+    <div class="search-block">
+      <i class="ri-search-line"></i>
+      <input class="search-input" type="text" placeholder="Поиск: марка, модель, VIN...">
+    </div>
+    <!-- Популярные бренды -->
+    <div class="brands-block">
+      <div class="brands-title">Популярные марки</div>
+      <div class="brands-row">
+        <div class="brand"><img src="https://i.imgur.com/KZfKbeC.png" alt="BMW"><!-- BMW --></div>
+        <div class="brand"><img src="https://i.imgur.com/oeUzLrs.png" alt="Audi"><!-- Audi --></div>
+        <div class="brand"><img src="https://i.imgur.com/G6RmX6g.png" alt="Toyota"><!-- Toyota --></div>
+        <div class="brand"><img src="https://i.imgur.com/r7XRmy2.png" alt="Mercedes"><!-- Mercedes --></div>
+        <!-- добавь бренды -->
+      </div>
+    </div>
+    <!-- Лучшие предложения -->
+    <div class="cars-title">Лучшие предложения</div>
+    <div class="car-card" onclick="alert('Audi A4 выбрано')">
+      <img class="car-img" src="https://i.imgur.com/J5R5p1Q.jpg" alt="Audi A4">
+      <div class="car-info">
+        <div class="car-title">Audi A4 2.0 TFSI</div>
+        <div class="car-meta">2021 · 32 000 км</div>
+        <div class="car-price">2 420 000 ₽</div>
+      </div>
+    </div>
+    <div class="car-card" onclick="alert('Toyota Camry выбрано')">
+      <img class="car-img" src="https://i.imgur.com/yBfJ0ag.jpg" alt="Toyota Camry">
+      <div class="car-info">
+        <div class="car-title">Toyota Camry 2.5</div>
+        <div class="car-meta">2020 · 41 000 км</div>
+        <div class="car-price">2 120 000 ₽</div>
+      </div>
+    </div>
+    <!-- Еще карточки... -->
+  </div>
+  <!-- Нижнее меню -->
+  <nav class="bottom-nav">
+    <div class="nav-btn"><i class="ri-home-5-fill"></i><span>Главная</span></div>
+    <div class="nav-btn inactive"><i class="ri-search-line"></i><span>Поиск</span></div>
+    <div class="nav-btn inactive"><i class="ri-user-3-line"></i><span>Профиль</span></div>
+  </nav>
+</body>
+</html>
