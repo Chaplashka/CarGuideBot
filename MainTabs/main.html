@@ -1,243 +1,108 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>CarGuide — Telegram WebApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Inter и иконки -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
-  <style>
-    body {
-      background: #f8fafc;
-      margin: 0;
-      font-family: 'Inter', Arial, sans-serif;
-      color: #223143;
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 0 16px 32px 16px;
-    }
-    .header {
-      text-align: center;
-      margin: 26px 0 14px 0;
-    }
-    .logo {
-      font-weight: 900;
-      color: #2565f7;
-      font-size: 2.2rem;
-      letter-spacing: 1px;
-      font-style: italic;
-      margin-bottom: 6px;
-    }
-    .subtitle {
-      font-size: 1rem;
-      color: #4c5c74;
-      font-weight: 500;
-      margin-bottom: 12px;
-    }
-    /* Быстрые действия */
-    .actions-row {
-      display: flex;
-      gap: 11px;
-      margin: 17px 0 19px 0;
-    }
-    .action {
-      flex: 1;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px #2565f709;
-      padding: 15px 0 10px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      transition: box-shadow .14s, transform .15s;
-    }
-    .action:active { box-shadow: 0 1px 5px #2565f733; transform: scale(0.97);}
-    .action .ri {
-      font-size: 1.68rem;
-      color: #2565f7;
-      margin-bottom: 4px;
-    }
-    .action-label {
-      font-size: 0.99rem;
-      font-weight: 700;
-      color: #222;
-    }
-    /* Поиск */
-    .search-block {
-      background: #fff;
-      border-radius: 13px;
-      box-shadow: 0 1px 8px #0001;
-      display: flex;
-      align-items: center;
-      padding: 13px 15px;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .search-block .ri { color: #2565f7; font-size: 1.1rem;}
-    .search-input {
-      border: none;
-      outline: none;
-      background: none;
-      font-size: 1rem;
-      flex: 1;
-      font-family: inherit;
-      color: #223143;
-    }
-    /* Популярные марки */
-    .brands-block { margin-bottom: 25px; }
-    .brands-title { font-size: 1.06rem; font-weight: 700; color: #344056; margin-bottom: 8px;}
-    .brands-row {
-      display: flex; gap: 15px;
-      overflow-x: auto; padding-bottom: 6px;
-    }
-    .brand {
-      background: #fff;
-      border-radius: 50%;
-      width: 56px; height: 56px;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 7px #0001;
-      margin-bottom: 2px;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: box-shadow .16s;
-    }
-    .brand:active { box-shadow: 0 0px 3px #2565f719;}
-    .brand img {
-      width: 32px; height: 32px; object-fit: contain;
-    }
-    /* Карточки авто */
-    .cars-title {
-      font-size: 1.09rem;
-      font-weight: 700;
-      color: #344056;
-      margin-bottom: 8px;
-      margin-top: 28px;
-    }
-    .car-card {
-      background: #fff;
-      border-radius: 17px;
-      box-shadow: 0 2px 13px #2565f714;
-      padding: 15px 17px;
-      margin-bottom: 18px;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      transition: box-shadow .13s;
-      cursor: pointer;
-    }
-    .car-card:active { box-shadow: 0 2px 7px #2565f728;}
-    .car-img {
-      width: 60px; height: 44px;
-      border-radius: 12px;
-      object-fit: cover;
-      background: #eceff3;
-    }
-    .car-info { flex: 1;}
-    .car-title { font-size: 1.01rem; font-weight: 800;}
-    .car-meta { color: #7e92af; font-size: 0.98rem;}
-    .car-price { font-size: 1.02rem; font-weight: 700; color: #2565f7; margin-top: 3px;}
-    /* Нижнее меню */
-    .bottom-nav {
-      position: fixed;
-      left: 0; right: 0; bottom: 0;
-      background: #fff;
-      border-top: 1px solid #f2f4f8;
-      box-shadow: 0 -2px 10px #0002;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 99;
-    }
-    .nav-btn {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      color: #2565f7;
-      font-size: 1.43rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: color .13s;
-    }
-    .nav-btn span { font-size: 0.84rem; margin-top: 1px;}
-    .nav-btn.inactive { color: #a9b5c8; }
-    @media (max-width: 520px) {
-      .container { max-width: 99vw; padding: 0 2vw 56px 2vw;}
-      .header { margin-top: 13px;}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Машина едет</title>
+<style>
+  body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+  }
+
+  .group-1 {
+    position: relative; /* Для позиционирования дочерних элементов */
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f0f0f0; /* Просто для наглядности */
+  }
+
+  .photoroom-20250527-161022-1 {
+    /* Наша "машина" */
+    position: relative; /* Чтобы можно было двигать свойством left */
+    left: 0; /* Начальная позиция */
+    width: 150px; /* Примерный размер, настройте под ваше изображение */
+    height: auto;
+    transition: left 1s ease-in-out; /* Плавная анимация движения */
+    display: block; /* Чтобы margin работал как ожидается */
+    margin-bottom: 20px;
+  }
+
+  .unlock {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .unlock:hover {
+    background-color: #45a049;
+  }
+
+  /* Стили для остальных элементов из вашего примера, можно добавить по желанию */
+  .rectangle-2, .rectangle-3, .rectangle-4 {
+    height: 20px;
+    background-color: #ddd;
+    margin-bottom: 5px;
+  }
+  .vector {
+    width: 50px;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- Логотип и слоган -->
-    <div class="header">
-      <div class="logo">CarGuide</div>
-      <div class="subtitle">Маркетплейс автомобилей.<br>Покупайте и продавайте авто — удобно и быстро!</div>
-    </div>
-    <!-- Быстрые действия -->
-    <div class="actions-row">
-      <div class="action" onclick="alert('Купить авто')">
-        <i class="ri-shopping-cart-2-line"></i>
-        <div class="action-label">Купить</div>
-      </div>
-      <div class="action" onclick="alert('Продать авто')">
-        <i class="ri-money-dollar-circle-line"></i>
-        <div class="action-label">Продать</div>
-      </div>
-      <div class="action" onclick="alert('Заявки')">
-        <i class="ri-list-check-3"></i>
-        <div class="action-label">Заявки</div>
-      </div>
-      <div class="action" onclick="alert('Сервис')">
-        <i class="ri-tools-line"></i>
-        <div class="action-label">Сервис</div>
-      </div>
-    </div>
-    <!-- Поиск -->
-    <div class="search-block">
-      <i class="ri-search-line"></i>
-      <input class="search-input" type="text" placeholder="Поиск: марка, модель, VIN...">
-    </div>
-    <!-- Популярные бренды -->
-    <div class="brands-block">
-      <div class="brands-title">Популярные марки</div>
-      <div class="brands-row">
-        <div class="brand"><img src="https://i.imgur.com/KZfKbeC.png" alt="BMW"><!-- BMW --></div>
-        <div class="brand"><img src="https://i.imgur.com/oeUzLrs.png" alt="Audi"><!-- Audi --></div>
-        <div class="brand"><img src="https://i.imgur.com/G6RmX6g.png" alt="Toyota"><!-- Toyota --></div>
-        <div class="brand"><img src="https://i.imgur.com/r7XRmy2.png" alt="Mercedes"><!-- Mercedes --></div>
-        <!-- добавь бренды -->
-      </div>
-    </div>
-    <!-- Лучшие предложения -->
-    <div class="cars-title">Лучшие предложения</div>
-    <div class="car-card" onclick="alert('Audi A4 выбрано')">
-      <img class="car-img" src="https://i.imgur.com/J5R5p1Q.jpg" alt="Audi A4">
-      <div class="car-info">
-        <div class="car-title">Audi A4 2.0 TFSI</div>
-        <div class="car-meta">2021 · 32 000 км</div>
-        <div class="car-price">2 420 000 ₽</div>
-      </div>
-    </div>
-    <div class="car-card" onclick="alert('Toyota Camry выбрано')">
-      <img class="car-img" src="https://i.imgur.com/yBfJ0ag.jpg" alt="Toyota Camry">
-      <div class="car-info">
-        <div class="car-title">Toyota Camry 2.5</div>
-        <div class="car-meta">2020 · 41 000 км</div>
-        <div class="car-price">2 120 000 ₽</div>
-      </div>
-    </div>
-    <!-- Еще карточки... -->
-  </div>
-  <!-- Нижнее меню -->
-  <nav class="bottom-nav">
-    <div class="nav-btn"><i class="ri-home-5-fill"></i><span>Главная</span></div>
-    <div class="nav-btn inactive"><i class="ri-search-line"></i><span>Поиск</span></div>
-    <div class="nav-btn inactive"><i class="ri-user-3-line"></i><span>Профиль</span></div>
-  </nav>
+
+<div class="group-1">
+  <div class="rectangle-3"></div>
+  <div class="rectangle-4"></div>
+  <img
+    class="photoroom-20250527-161022-1"
+    id="carImage" src="photoroom-20250527-161022-10.png"
+    alt="Машина"
+  />
+  <div class="rectangle-2"></div>
+  <img class="vector" src="vector0.svg" alt="Векторная иконка" />
+  <div class="unlock" id="unlockButton">Unlock</div> <div class="div">ЗДРАВСТВУЙТЕ</div>
+</div>
+
+<script>
+  // Находим кнопку "Unlock" по её ID
+  const unlockButton = document.getElementById('unlockButton');
+  // Находим изображение "машины" по её ID
+  const car = document.getElementById('carImage');
+
+  // Переменная для отслеживания, "разблокирована" ли машина (чтобы она не уезжала бесконечно)
+  // В данном простом примере, мы просто сдвинем её один раз на фиксированное расстояние.
+  // Для более сложного поведения (например, повторяющиеся нажатия или разные действия)
+  // логику нужно будет усложнить.
+
+  let currentPosition = 0; // Текущее смещение машины в пикселях
+  const moveDistance = 100; // На сколько пикселей машина поедет вперед за одно нажатие
+
+  // Добавляем обработчик события "click" (нажатие) на кнопку
+  unlockButton.addEventListener('click', function() {
+    // Увеличиваем текущую позицию
+    currentPosition += moveDistance;
+    // Двигаем машину вправо, изменяя её свойство 'left'
+    // 'left' работает, потому что у машины в CSS установлено 'position: relative;'
+    car.style.left = currentPosition + 'px';
+
+    console.log('Машина поехала вперед!');
+    // Можно добавить здесь другие действия, если нужно.
+    // Например, можно сделать так, чтобы кнопка "Unlock" меняла текст на "Lock"
+    // или становилась неактивной после одного нажатия.
+  });
+</script>
+
 </body>
 </html>
