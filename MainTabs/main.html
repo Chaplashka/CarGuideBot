@@ -3,124 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>АвтоМаркет - Мобильное приложение</title>
+    <title>CarGuide - Мобильное приложение</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.0.18/24/outline/heroicons.min.css" rel="stylesheet">
     <style>
-        /* Кастомные стили для мобильного приложения */
+        /* Tesla Cybertruck-подобный стиль */
         body {
-            font-family: 'Open Sans', sans-serif;
-            color: #4A5568; /* Текстовый цвет по умолчанию (Темно-серый) */
-            background-color: #F7FAFC; /* Фоновый цвет по умолчанию (Очень светло-серый) */
-            -webkit-tap-highlight-color: transparent; /* Убираем подсветку при тапе */
+            font-family: 'Inter', sans-serif;
+            color: #E0E0E0; 
+            background-color: #0D0D0D; 
+            -webkit-tap-highlight-color: transparent;
         }
+        
+        main > section, header, #side-menu > div:last-child, #search-modal > div.modal-content {
+            background-color: #1A1A1A; 
+            border-color: #2C2C2C; 
+        }
+        header {
+             background-color: #1A1A1A; 
+             border-bottom: 1px solid #2C2C2C;
+        }
+        /* Убираем фон и верхнюю границу у самой панели навигации */
+        .bottom-nav { 
+            background-color: transparent; /* Прозрачный фон для панели */
+            border-top: none; /* Убираем верхнюю границу */
+            padding: 0.5rem 0.25rem; /* Небольшие отступы по бокам панели, чтобы кнопки не прилипали к краям */
+        }
+
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            color: #2D3748; /* Графитовый серый для заголовков */
+            font-family: 'Inter', sans-serif; 
+            color: #FFFFFF; 
+            font-weight: 600;
         }
 
-        /* Цвета из палитры "Современные Технологии и Доверие" */
-        .bg-brand-deep-blue { background-color: #1A202C; }
-        .text-brand-deep-blue { color: #1A202C; }
-        .bg-brand-graphite { background-color: #2D3748; }
-        .text-brand-graphite { color: #2D3748; }
-        .bg-brand-blue-accent { background-color: #3182CE; }
-        .text-brand-blue-accent { color: #3182CE; }
-        .hover-bg-brand-blue-accent-dark:hover, .active-bg-brand-blue-accent-dark:active { background-color: #2B6CB0; }
-        .bg-brand-orange-accent { background-color: #DD6B20; }
-        .text-brand-orange-accent { color: #DD6B20; }
-        .hover-bg-brand-orange-accent-dark:hover, .active-bg-brand-orange-accent-dark:active { background-color: #C05621; }
-        .bg-brand-light-gray { background-color: #F7FAFC; }
-        .text-brand-dark-gray { color: #4A5568; }
-        .text-brand-light-gray-text { color: #E2E8F0; }
+        .text-brand-accent-blue { color: #00A2FF; } 
+        .bg-brand-accent-blue { background-color: #00A2FF; }
+        .hover-bg-brand-accent-blue-dark:hover, .active-bg-brand-accent-blue-dark:active { background-color: #0080CC; }
+        .border-brand-accent-blue { border-color: #00A2FF; }
+        .ring-brand-accent-blue:focus { ring-color: #00A2FF; }
+        .focus-border-brand-accent-blue:focus { border-color: #00A2FF; }
 
-        /* Стили для карточек */
         .card {
-            background-color: #FFFFFF;
-            border-radius: 0.75rem; /* 12px, чуть больше для "апп" вида */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0,0,0,0.03); /* Мягкая тень */
+            background-color: #1A1A1A; 
+            border-radius: 0.75rem; 
+            border: 1px solid #2C2C2C; 
+            box-shadow: 0 2px 8px rgba(0, 162, 255, 0.1); 
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .card:active { /* Эффект при нажатии */
-            transform: scale(0.98);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        .card:hover {
+             box-shadow: 0 4px 12px rgba(0, 162, 255, 0.15);
+             transform: translateY(-2px);
+        }
+        .card:active {
+            transform: scale(0.98) translateY(0);
+        }
+        .card img {
+            border-bottom: 1px solid #2C2C2C;
         }
 
-        /* Для горизонтальной прокрутки категорий */
         .horizontal-scroll {
-            -ms-overflow-style: none;  /* IE и Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         .horizontal-scroll::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
+        }
+        .category-chip {
+            background-color: #2C2C2C; 
+            color: #A0A0A0; 
+            border: 1px solid #3D3D3D;
+            border-radius: 0.5rem; 
+            padding: 0.5rem 1rem; 
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .category-chip.active, .category-chip:hover {
+            background-color: #00A2FF; 
+            color: #FFFFFF; 
+            border-color: #00A2FF;
+            box-shadow: 0 0 8px rgba(0, 162, 255, 0.3);
         }
 
-        /* Стили для модального окна поиска */
-        .search-modal {
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+        .modal-overlay {
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            backdrop-filter: blur(4px); 
         }
-        .search-modal.hidden {
+        .modal-overlay.hidden {
             opacity: 0;
             visibility: hidden;
         }
-        .search-modal-content {
-            transition: transform 0.3s ease;
+        .modal-content {
+            transition: transform 0.2s ease;
+            background-color: #1F1F1F; 
+            border-radius: 0.75rem; 
+            border: 1px solid #00A2FF; 
+            box-shadow: 0 0 25px rgba(0, 162, 255, 0.25);
         }
-        .search-modal.hidden .search-modal-content {
-            transform: translateY(-20px);
+        .modal-overlay.hidden .modal-content {
+            transform: scale(0.95) translateY(-10px);
         }
         
-        /* Нижняя навигационная панель */
-        .bottom-nav {
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        /* Стили для нижней навигационной панели - круглые выпирающие кнопки */
+        .bottom-nav-item {
+            width: 56px;  /* Фиксированная ширина для круга */
+            height: 56px; /* Фиксированная высота для круга */
+            border-radius: 50%; /* Полностью круглые */
+            display: flex; /* Для центрирования контента внутри */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #222222; /* Фон для НЕАКТИВНЫХ кнопок */
+            border: 1px solid #3D3D3D; /* Граница для НЕАКТИВНЫХ кнопок */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0,0,0,0.2); /* Эффект выпирания */
+            transition: background-color 0.2s ease, transform 0.15s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            margin: 0 0.2rem; /* Отступы между кнопками */
         }
-        .bottom-nav-item.active svg {
-            color: #3182CE; /* brand-blue-accent */
+
+        .bottom-nav-item svg {
+             width: 1.5rem; /* 24px */
+             height: 1.5rem; /* 24px */
+             margin-bottom: 0.125rem; /* 2px, если текст под иконкой */
+             color: #A0A0A0; 
+             transition: color 0.2s ease;
         }
+        .bottom-nav-item span {
+             font-size: 0.625rem; /* 10px, очень маленький текст под иконкой */
+             line-height: 1;
+             color: #A0A0A0; 
+             transition: color 0.2s ease;
+        }
+
+
+        .bottom-nav-item.active {
+            background-color: #00A2FF; /* Синий фон для АКТИВНОЙ кнопки */
+            border-color: #00A2FF; 
+            box-shadow: 0 0 15px rgba(0, 162, 255, 0.6), 0 2px 5px rgba(0, 162, 255, 0.3); /* Более яркое неоновое свечение */
+        }
+
+        .bottom-nav-item.active svg,
         .bottom-nav-item.active span {
-            color: #3182CE; /* brand-blue-accent */
+            color: #FFFFFF; 
+        }
+
+        .bottom-nav-item:active { 
+            transform: scale(0.92) translateY(1px); /* Более выраженное нажатие */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25); /* Тень при нажатии */
+        }
+        .bottom-nav-item:not(.active):active {
+            background-color: #303030; 
+            border-color: #454545;
+        }
+        .bottom-nav-item.active:active {
+            background-color: #0080CC; 
+            border-color: #0080CC;
+        }
+
+
+        #sell-form-section, #buy-request-section, #profile-section {
+            display: none;
+        }
+        .toast-notification {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #00A2FF; 
+            color: #0D0D0D; 
+            padding: 12px 22px;
+            border-radius: 0.5rem; 
+            font-size: 0.875rem;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.5s ease, bottom 0.5s ease;
+            visibility: hidden;
+            box-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
+        }
+        .toast-notification.show {
+            opacity: 1;
+            bottom: 90px;
+            visibility: visible;
+        }
+        #car-image-preview {
+            width: 100%;
+            height: 180px; 
+            background-color: #222222; 
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #A0A0A0; 
+            margin-top: 1rem;
+            overflow: hidden;
+            border: 1px dashed #00A2FF; 
+        }
+        #car-image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Стили для форм */
+        input[type="text"], input[type="tel"], input[type="number"], input[type="url"], input[type="search"], select, textarea {
+            background-color: #222222; 
+            border: 1px solid #3D3D3D; 
+            color: #E0E0E0; 
+            border-radius: 0.5rem; 
+            padding: 0.75rem 1rem; 
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #707070; 
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #00A2FF; 
+            box-shadow: 0 0 0 3px rgba(0, 162, 255, 0.2); 
+            outline: none;
+        }
+        label {
+            color: #B0B0B0; 
+            font-size: 0.875rem; 
+            font-weight: 500;
+        }
+        /* Кнопки */
+        .btn-primary {
+            background-color: #00A2FF; 
+            color: #FFFFFF;
+            border-radius: 0.5rem; 
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 162, 255, 0.2);
+        }
+        .btn-primary:hover, .btn-primary:active {
+            background-color: #0080CC;
+            box-shadow: 0 4px 8px rgba(0, 162, 255, 0.3);
+        }
+        .btn-secondary {
+            background-color: transparent; 
+            color: #00A2FF; 
+            border: 1px solid #00A2FF; 
+            border-radius: 0.5rem; 
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+         .btn-secondary:hover, .btn-secondary:active {
+            background-color: rgba(0, 162, 255, 0.1); 
+            box-shadow: 0 0 8px rgba(0, 162, 255, 0.2);
+        }
+        /* Стили для чекбоксов в форме "Купить" */
+        #buy-color-options .form-checkbox {
+            background-color: #2C2C2C;
+            border-color: #3D3D3D;
+        }
+        #buy-color-options .form-checkbox:checked {
+            background-color: #00A2FF;
+            border-color: #00A2FF;
+        }
+        #buy-color-options label {
+            color: #E0E0E0;
         }
 
     </style>
     <script>
-        // Конфигурация Tailwind (если нужна кастомизация)
         tailwind.config = {
           theme: {
             extend: {
               colors: {
-                'brand-deep-blue': '#1A202C',
-                'brand-graphite': '#2D3748',
-                'brand-blue-accent': '#3182CE',
-                'brand-blue-accent-dark': '#2B6CB0',
-                'brand-orange-accent': '#DD6B20',
-                'brand-orange-accent-dark': '#C05621',
-                'brand-light-gray': '#F7FAFC',
-                'brand-dark-gray-text': '#4A5568',
-                'brand-light-gray-text': '#E2E8F0',
+                'brand-bg-main': '#0D0D0D',
+                'brand-bg-elements': '#1A1A1A',
+                'brand-bg-input': '#222222',
+                'brand-text-primary': '#E0E0E0',
+                'brand-text-secondary': '#A0A0A0',
+                'brand-text-placeholder': '#707070',
+                'brand-border-dark': '#2C2C2C',
+                'brand-border-medium': '#3D3D3D',
+                'brand-accent-blue': '#00A2FF', 
+                'brand-accent-blue-dark': '#0080CC',
               },
               fontFamily: {
-                sans: ['Open Sans', 'sans-serif'],
-                heading: ['Montserrat', 'sans-serif'],
+                sans: ['Inter', 'sans-serif'],
+                heading: ['Inter', 'sans-serif'],
               },
+              boxShadow: {
+                'neon-blue-sm': '0 0 8px rgba(0, 162, 255, 0.3)',
+                'neon-blue-md': '0 0 15px rgba(0, 162, 255, 0.4)',
+              }
             }
           }
         }
       </script>
 </head>
-<body class="bg-brand-light-gray text-brand-dark-gray-text pb-20"> <header class="bg-white shadow-sm sticky top-0 z-40">
+<body class="pb-20"> <header class="sticky top-0 z-40">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-14">
-                <a href="#" class="text-xl font-bold font-heading text-brand-blue-accent">АвтоМаркет</a>
-                <div class="flex items-center space-x-3">
-                    <button id="search-icon-button" aria-label="Поиск" class="text-brand-dark-gray-text hover:text-brand-blue-accent p-2">
+                <a href="#" id="logo-link" class="text-xl font-bold font-heading text-brand-accent-blue">CarGuide</a>
+                <div class="flex items-center space-x-2">
+                    <button id="search-icon-button" aria-label="Поиск" class="text-brand-text-secondary hover:text-brand-accent-blue p-2 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                     </button>
-                    <button id="mobile-menu-button" aria-label="Меню" class="text-brand-dark-gray-text hover:text-brand-blue-accent p-2">
+                    <button id="mobile-menu-button" aria-label="Меню" class="text-brand-text-secondary hover:text-brand-accent-blue p-2 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
@@ -130,194 +318,571 @@
         </div>
     </header>
 
-    <div id="search-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-4 hidden search-modal">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-4 mt-10 search-modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold font-heading">Поиск</h3>
-                <button id="close-search-modal" class="p-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-500">
+    <div id="search-modal" class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-start justify-center p-4 hidden modal-overlay">
+        <div class="shadow-xl w-full max-w-md p-5 mt-10 modal-content">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-lg font-semibold text-brand-text-primary">Поиск</h3>
+                <button id="close-search-modal" class="p-1 text-brand-text-secondary hover:text-brand-accent-blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <input type="search" placeholder="Марка, модель, артикул..." class="w-full py-2.5 px-4 border border-gray-300 rounded-md focus:ring-brand-blue-accent focus:border-brand-blue-accent mb-3">
-            <button class="w-full bg-brand-blue-accent hover-bg-brand-blue-accent-dark text-white py-2.5 px-4 rounded-md font-semibold">Найти</button>
+            <input type="search" id="search-input-modal" placeholder="Марка, модель, артикул..." class="w-full py-2.5 px-4 mb-4">
+            <button id="search-submit-modal" class="w-full btn-primary py-3 px-4 font-semibold">Найти</button>
         </div>
     </div>
 
     <div id="side-menu" class="fixed inset-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
-        <div class="fixed inset-0 bg-black bg-opacity-50" id="side-menu-overlay"></div>
-        <div class="relative bg-white w-4/5 max-w-xs h-full shadow-xl p-5">
-            <button id="close-side-menu" class="absolute top-4 right-4 p-1">
-                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-600">
+        <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" id="side-menu-overlay"></div>
+        <div class="relative w-4/5 max-w-xs h-full shadow-xl p-5">
+            <button id="close-side-menu" class="absolute top-4 right-4 p-1 text-brand-text-secondary hover:text-brand-accent-blue">
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            <div class="text-xl font-bold font-heading text-brand-blue-accent mb-6">АвтоМаркет</div>
-            <nav class="space-y-3">
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-dark-gray-text"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
-                    <span class="text-brand-dark-gray-text font-medium">Купить</span>
+            <div class="text-xl font-bold text-brand-accent-blue mb-8">CarGuide</div>
+            <nav class="space-y-2">
+                <a href="#" id="menu-buy-link" class="flex items-center space-x-3 p-3 rounded-md hover:bg-brand-bg-elements active:bg-brand-border-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-accent-blue"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+                    <span class="text-brand-text-primary font-medium">Хочу Купить</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-dark-gray-text"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span class="text-brand-dark-gray-text font-medium">Продать</span>
+                <a href="#" id="menu-sell-link" class="flex items-center space-x-3 p-3 rounded-md hover:bg-brand-bg-elements active:bg-brand-border-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-accent-blue"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span class="text-brand-text-primary font-medium">Продать</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-dark-gray-text"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 17.25v-.228a4.5 4.5 0 00-.12-1.03l-2.268-9.64a3.375 3.375 0 00-3.285-2.602H7.923a3.375 3.375 0 00-3.285 2.602l-2.268 9.64a4.5 4.5 0 00-.12 1.03v.228c0 .597.237 1.17.659 1.591l.645.645c.21.21.46.386.72.526C8.14 20.065 9.96 20.5 12 20.5s3.86-.435 5.256-1.238c.26-.14.51-.316.72-.526l.645-.645A2.25 2.25 0 0021.75 17.25z" /></svg>
-                    <span class="text-brand-dark-gray-text font-medium">Запчасти</span>
+                <a href="#" id="menu-parts-link" class="flex items-center space-x-3 p-3 rounded-md hover:bg-brand-bg-elements active:bg-brand-border-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-accent-blue"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 17.25v-.228a4.5 4.5 0 00-.12-1.03l-2.268-9.64a3.375 3.375 0 00-3.285-2.602H7.923a3.375 3.375 0 00-3.285 2.602l-2.268 9.64a4.5 4.5 0 00-.12 1.03v.228c0 .597.237 1.17.659 1.591l.645.645c.21.21.46.386.72.526C8.14 20.065 9.96 20.5 12 20.5s3.86-.435 5.256-1.238c.26-.14.51-.316.72-.526l.645-.645A2.25 2.25 0 0021.75 17.25z" /></svg>
+                    <span class="text-brand-text-primary font-medium">Запчасти</span>
                 </a>
-                <hr class="my-3">
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-dark-gray-text"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18V7.875c0-.621.504-1.125 1.125-1.125H7.5" /></svg>
-                    <span class="text-brand-dark-gray-text font-medium">Новости</span>
+                <hr class="my-3 border-brand-border-dark">
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-md hover:bg-brand-bg-elements active:bg-brand-border-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-text-secondary"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18V7.875c0-.621.504-1.125 1.125-1.125H7.5" /></svg>
+                    <span class="text-brand-text-primary font-medium">Новости</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-dark-gray-text"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" /></svg>
-                    <span class="text-brand-dark-gray-text font-medium">Помощь</span>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-md hover:bg-brand-bg-elements active:bg-brand-border-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-text-secondary"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" /></svg>
+                    <span class="text-brand-text-primary font-medium">Помощь</span>
                 </a>
-                 <a href="#" class="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 active:bg-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-dark-gray-text"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-                    <span class="text-brand-dark-gray-text font-medium">Войти / Регистрация</span>
+                 <a href="#" class="flex items-center space-x-3 p-3 rounded-md hover:bg-brand-bg-elements active:bg-brand-border-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-brand-text-secondary"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                    <span class="text-brand-text-primary font-medium">Войти / Регистрация</span>
                 </a>
             </nav>
         </div>
     </div>
 
     <main class="container mx-auto px-4 py-5">
-        <h1 class="text-2xl font-bold font-heading mb-5 text-center">Что ищем сегодня?</h1>
+        <h1 id="main-page-title" class="text-2xl font-bold font-heading mb-6 text-center">Что ищем сегодня?</h1>
 
-        <section class="mb-6">
-            <h2 class="text-lg font-semibold font-heading mb-3">Категории</h2>
+        <section id="buy-request-section" class="mb-6 p-5 rounded-lg shadow-neon-blue-sm border border-brand-border-dark">
+            <h2 class="text-xl font-semibold font-heading mb-5">Хочу купить автомобиль</h2>
+            <form id="buy-request-form" class="space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label for="buy-make" class="block text-sm font-medium mb-1">Марка:</label>
+                        <select id="buy-make" name="buy-make" class="w-full" required>
+                            <option value="">Выберите марку</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="buy-model" class="block text-sm font-medium mb-1">Модель:</label>
+                        <select id="buy-model" name="buy-model" class="w-full" disabled required>
+                            <option value="">Выберите модель</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="buy-generation" class="block text-sm font-medium mb-1">Поколение:</label>
+                        <select id="buy-generation" name="buy-generation" class="w-full" disabled required>
+                            <option value="">Выберите поколение</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label class="block text-sm font-medium mb-1">Цвет:</label>
+                        <div id="buy-color-options" class="flex flex-wrap gap-x-4 gap-y-2 mt-1 p-3 rounded-md border border-brand-border-medium bg-brand-bg-input">
+                            <span class="text-xs text-brand-text-secondary">Выберите поколение</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="car-image-preview" class="mb-5">
+                    <span class="text-brand-text-secondary">[Изображение автомобиля появится здесь]</span>
+                </div>
+
+                <div>
+                    <label for="buy-description" class="block text-sm font-medium mb-1">Дополнительные пожелания:</label>
+                    <textarea id="buy-description" name="buy-description" rows="2" placeholder="Например, комплектация, пробег до..." class="w-full"></textarea>
+                </div>
+                <div>
+                    <label for="buy-contact" class="block text-sm font-medium mb-1">Ваш контакт (Telegram @username или телефон):</label>
+                    <input type="text" id="buy-contact" name="buy-contact" placeholder="@username_telegram / +79001234567" class="w-full" required>
+                </div>
+                <button type="submit" class="w-full btn-primary py-3 px-4 font-semibold">Отправить заявку</button>
+            </form>
+        </section>
+
+        <section id="sell-form-section" class="mb-6 p-5 rounded-lg shadow-neon-blue-sm border border-brand-border-dark">
+            <h2 class="text-xl font-semibold font-heading mb-5">Разместить объявление</h2>
+            <form id="sell-item-form" class="space-y-4">
+                <div>
+                    <label for="sell-type" class="block text-sm font-medium mb-1">Тип:</label>
+                    <select id="sell-type" name="type" class="w-full">
+                        <option value="auto">Автомобиль</option>
+                        <option value="parts">Запчасть</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="sell-make" class="block text-sm font-medium mb-1">Марка:</label>
+                    <input type="text" id="sell-make" name="make" placeholder="Toyota" class="w-full" required>
+                </div>
+                <div>
+                    <label for="sell-model" class="block text-sm font-medium mb-1">Модель:</label>
+                    <input type="text" id="sell-model" name="model" placeholder="Camry" class="w-full" required>
+                </div>
+                 <div>
+                    <label for="sell-year" class="block text-sm font-medium mb-1">Год:</label>
+                    <input type="number" id="sell-year" name="year" placeholder="2021" class="w-full" min="1900" max="2025">
+                </div>
+                <div>
+                    <label for="sell-price" class="block text-sm font-medium mb-1">Цена (₽):</label>
+                    <input type="number" id="sell-price" name="price" placeholder="2500000" class="w-full" required>
+                </div>
+                <div>
+                    <label for="sell-description" class="block text-sm font-medium mb-1">Описание:</label>
+                    <textarea id="sell-description" name="description" rows="3" placeholder="Краткое описание вашего товара..." class="w-full"></textarea>
+                </div>
+                <div>
+                    <label for="sell-image" class="block text-sm font-medium mb-1">Фото (URL):</label>
+                    <input type="url" id="sell-image" name="image" placeholder="https://example.com/image.jpg" class="w-full">
+                     <p class="text-xs text-brand-text-secondary mt-1">Для демо: вставьте URL изображения.</p>
+                </div>
+                <button type="submit" class="w-full btn-primary py-3 px-4 font-semibold">Опубликовать</button>
+            </form>
+        </section>
+
+        <section id="profile-section" class="mb-6 p-5 rounded-lg shadow-neon-blue-sm border border-brand-border-dark">
+            <h2 class="text-xl font-semibold font-heading mb-5">Мой профиль</h2>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label for="profile-name" class="block text-sm font-medium">Имя (из Telegram):</label>
+                    <input type="text" id="profile-name" value="Иван Петров" class="mt-1 block w-full">
+                </div>
+                <div>
+                    <label for="profile-username" class="block text-sm font-medium">Username Telegram:</label>
+                    <input type="text" id="profile-username" value="@ivan_petrov_tg" class="mt-1 block w-full">
+                </div>
+                <div>
+                    <label for="profile-phone" class="block text-sm font-medium">Телефон (если указан):</label>
+                    <input type="tel" id="profile-phone" value="+7 999 123-45-67" class="mt-1 block w-full">
+                </div>
+                 <button id="save-profile-button" class="mt-4 w-full btn-secondary py-2.5 px-4 font-medium">Сохранить изменения</button>
+            </div>
+            
+            <h3 class="text-lg font-semibold font-heading mb-3">Мои объявления</h3>
+            <div id="my-listings-container" class="space-y-3">
+                <p class="text-brand-text-secondary text-sm">У вас пока нет активных объявлений.</p>
+                </div>
+        </section>
+
+        <section id="categories-section" class="mb-6 p-4 rounded-lg shadow-lg border border-brand-border-dark">
+            <h2 class="text-lg font-semibold font-heading mb-4">Категории</h2>
             <div class="flex space-x-3 overflow-x-auto pb-2 horizontal-scroll">
-                <a href="#" class="flex-shrink-0 bg-white text-brand-blue-accent py-2 px-4 rounded-full shadow-sm text-sm font-medium border border-brand-blue-accent hover:bg-brand-blue-accent hover:text-white active:bg-brand-blue-accent-dark active:text-white transition-colors">Легковые</a>
-                <a href="#" class="flex-shrink-0 bg-white text-gray-700 py-2 px-4 rounded-full shadow-sm text-sm font-medium border border-gray-300 hover:bg-gray-100 active:bg-gray-200 transition-colors">Грузовые</a>
-                <a href="#" class="flex-shrink-0 bg-white text-gray-700 py-2 px-4 rounded-full shadow-sm text-sm font-medium border border-gray-300 hover:bg-gray-100 active:bg-gray-200 transition-colors">Мото</a>
-                <a href="#" class="flex-shrink-0 bg-white text-gray-700 py-2 px-4 rounded-full shadow-sm text-sm font-medium border border-gray-300 hover:bg-gray-100 active:bg-gray-200 transition-colors">Запчасти Новые</a>
-                <a href="#" class="flex-shrink-0 bg-white text-gray-700 py-2 px-4 rounded-full shadow-sm text-sm font-medium border border-gray-300 hover:bg-gray-100 active:bg-gray-200 transition-colors">Запчасти Б/У</a>
-                <a href="#" class="flex-shrink-0 bg-white text-gray-700 py-2 px-4 rounded-full shadow-sm text-sm font-medium border border-gray-300 hover:bg-gray-100 active:bg-gray-200 transition-colors">Шины и Диски</a>
+                <a href="#" class="category-chip flex-shrink-0 transition-colors active">Легковые</a>
+                <a href="#" class="category-chip flex-shrink-0 transition-colors">Грузовые</a>
+                <a href="#" class="category-chip flex-shrink-0 transition-colors">Мото</a>
+                <a href="#" class="category-chip flex-shrink-0 transition-colors">Запчасти Новые</a>
+                <a href="#" class="category-chip flex-shrink-0 transition-colors">Запчасти Б/У</a>
+                <a href="#" class="category-chip flex-shrink-0 transition-colors">Шины и Диски</a>
             </div>
         </section>
 
-        <section>
-            <h2 class="text-lg font-semibold font-heading mb-3">Горячие предложения</h2>
-            <div class="space-y-4">
-                <div class="card">
-                    <a href="#" class="block">
-                        <img src="https://placehold.co/600x400/2D3748/FFFFFF?text=Авто+1" alt="[Изображение автомобиля 1]" class="w-full h-40 object-cover rounded-t-lg">
-                        <div class="p-3">
-                            <h3 class="text-md font-semibold font-heading text-brand-graphite mb-0.5 truncate">Toyota Camry 2021</h3>
-                            <p class="text-brand-blue-accent font-bold text-lg mb-1">2 500 000 ₽</p>
-                            <p class="text-xs text-brand-dark-gray-text truncate mb-0.5">35 000 км, Бензин 2.5 л</p>
-                            <p class="text-xs text-gray-500 truncate">Москва, 1 час назад</p>
-                        </div>
-                    </a>
+        <section id="listings-section" class="p-4 rounded-lg shadow-lg border border-brand-border-dark">
+            <h2 class="text-lg font-semibold font-heading mb-4">Актуальные лоты</h2>
+            <div id="listings-container" class="space-y-4">
                 </div>
-                <div class="card">
-                     <a href="#" class="block">
-                        <img src="https://placehold.co/600x400/DD6B20/FFFFFF?text=Запчасть+1" alt="[Изображение запчасти 1]" class="w-full h-40 object-cover rounded-t-lg">
-                        <div class="p-3">
-                            <h3 class="text-md font-semibold font-heading text-brand-graphite mb-0.5 truncate">Фара передняя Audi A4 B8</h3>
-                            <p class="text-brand-orange-accent font-bold text-lg mb-1">15 000 ₽</p>
-                            <p class="text-xs text-brand-dark-gray-text truncate mb-0.5">Новая, Оригинал</p>
-                            <p class="text-xs text-gray-500 truncate">Екатеринбург, сегодня</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="card">
-                    <a href="#" class="block">
-                        <img src="https://placehold.co/600x400/2D3748/FFFFFF?text=Авто+2" alt="[Изображение автомобиля 2]" class="w-full h-40 object-cover rounded-t-lg">
-                        <div class="p-3">
-                            <h3 class="text-md font-semibold font-heading text-brand-graphite mb-0.5 truncate">BMW X5 2019</h3>
-                            <p class="text-brand-blue-accent font-bold text-lg mb-1">4 200 000 ₽</p>
-                            <p class="text-xs text-brand-dark-gray-text truncate mb-0.5">60 000 км, Дизель 3.0 л</p>
-                            <p class="text-xs text-gray-500 truncate">Санкт-Петербург, 3 часа назад</p>
-                        </div>
-                    </a>
-                </div>
+            <div id="no-listings-message" class="text-center text-brand-text-secondary py-8">
+                Пока нет объявлений. Станьте первым!
             </div>
-            <div class="text-center mt-6">
-                <a href="#" class="bg-brand-blue-accent hover-bg-brand-blue-accent-dark text-white py-2.5 px-6 rounded-md font-semibold text-sm transition-colors active:bg-brand-blue-accent-dark">Все предложения</a>
+            <div class="text-center mt-6" id="view-all-listings-button-container" style="display: none;">
+                <a href="#" id="view-all-listings-button" class="btn-primary py-2.5 px-6 font-semibold text-sm">Все объявления</a>
             </div>
         </section>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white h-16 flex items-center justify-around z-30 bottom-nav">
-        <a href="#" class="bottom-nav-item flex flex-col items-center justify-center text-gray-600 hover:text-brand-blue-accent w-1/4 p-1 active">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mb-0.5">
+    <nav class="fixed bottom-0 left-0 right-0 h-16 flex items-center justify-around z-30 bottom-nav">
+        <a href="#" id="nav-home" class="bottom-nav-item flex flex-col items-center justify-center active">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />
             </svg>
-            <span class="text-xs">Главная</span>
+            <span class="text-xs mt-1">Главная</span>
         </a>
-        <a href="#" class="bottom-nav-item flex flex-col items-center justify-center text-gray-600 hover:text-brand-blue-accent w-1/4 p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mb-0.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
-            <span class="text-xs">Поиск</span>
+        <a href="#" id="nav-buy-request" class="bottom-nav-item flex flex-col items-center justify-center">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+            <span class="text-xs mt-1">Купить</span>
         </a>
-        <a href="#" class="bottom-nav-item flex flex-col items-center justify-center text-gray-600 hover:text-brand-blue-accent w-1/4 p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mb-0.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span class="text-xs">Продать</span>
+        <a href="#" id="nav-sell" class="bottom-nav-item flex flex-col items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span class="text-xs mt-1">Продать</span>
         </a>
-        <a href="#" class="bottom-nav-item flex flex-col items-center justify-center text-gray-600 hover:text-brand-blue-accent w-1/4 p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mb-0.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span class="text-xs">Профиль</span>
+        <a href="#" id="nav-profile" class="bottom-nav-item flex flex-col items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            <span class="text-xs mt-1">Профиль</span>
         </a>
     </nav>
 
+    <div id="toast-notification" class="toast-notification">Сообщение</div>
+
     <script>
-        // Скрипт для мобильного меню (боковое)
+        // --- DOM Элементы ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const sideMenu = document.getElementById('side-menu');
         const closeSideMenuButton = document.getElementById('close-side-menu');
         const sideMenuOverlay = document.getElementById('side-menu-overlay');
 
-        if (mobileMenuButton && sideMenu && closeSideMenuButton && sideMenuOverlay) {
-            mobileMenuButton.addEventListener('click', () => {
-                sideMenu.classList.remove('-translate-x-full');
-            });
-            closeSideMenuButton.addEventListener('click', () => {
-                sideMenu.classList.add('-translate-x-full');
-            });
-            sideMenuOverlay.addEventListener('click', () => {
-                sideMenu.classList.add('-translate-x-full');
-            });
-        }
-
-        // Скрипт для модального окна поиска
         const searchIconButton = document.getElementById('search-icon-button');
         const searchModal = document.getElementById('search-modal');
         const closeSearchModalButton = document.getElementById('close-search-modal');
+        const searchInputModal = document.getElementById('search-input-modal');
+        const searchSubmitModal = document.getElementById('search-submit-modal');
+        
+        const logoLink = document.getElementById('logo-link');
+        const mainPageTitle = document.getElementById('main-page-title');
+        const categoriesSection = document.getElementById('categories-section');
+        const listingsSection = document.getElementById('listings-section');
+        const listingsContainer = document.getElementById('listings-container');
+        const noListingsMessage = document.getElementById('no-listings-message');
+        const viewAllListingsButtonContainer = document.getElementById('view-all-listings-button-container');
 
-        if (searchIconButton && searchModal && closeSearchModalButton) {
-            searchIconButton.addEventListener('click', () => {
-                searchModal.classList.remove('hidden');
-            });
-            closeSearchModalButton.addEventListener('click', () => {
-                searchModal.classList.add('hidden');
-            });
-            // Закрытие по клику вне модального окна
-            searchModal.addEventListener('click', (event) => {
-                if (event.target === searchModal) {
-                    searchModal.classList.add('hidden');
+
+        const buyRequestSection = document.getElementById('buy-request-section');
+        const buyRequestForm = document.getElementById('buy-request-form');
+        const buyMakeSelect = document.getElementById('buy-make');
+        const buyModelSelect = document.getElementById('buy-model');
+        const buyGenerationSelect = document.getElementById('buy-generation');
+        const buyColorOptions = document.getElementById('buy-color-options');
+        const carImagePreview = document.getElementById('car-image-preview');
+
+
+        const sellFormSection = document.getElementById('sell-form-section');
+        const sellItemForm = document.getElementById('sell-item-form');
+        const profileSection = document.getElementById('profile-section');
+        const saveProfileButton = document.getElementById('save-profile-button');
+        const myListingsContainer = document.getElementById('my-listings-container');
+
+
+        const navHome = document.getElementById('nav-home');
+        const navBuyRequest = document.getElementById('nav-buy-request');
+        const navSell = document.getElementById('nav-sell');
+        const navProfile = document.getElementById('nav-profile');
+        const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+
+        const toastNotification = document.getElementById('toast-notification');
+
+        // --- Mock данные для автомобилей (марка, модель, поколение, цвета, изображение) ---
+        const carData = { // Используем плейсхолдеры с новыми акцентными цветами
+            "Toyota": {
+                "Camry": {
+                    "XV70 (2017-н.в.)": { colors: ["Черный", "Белый", "Серебристый", "Синий"], image: "https://placehold.co/600x400/00A2FF/0D0D0D?text=Toyota+Camry+XV70&font=inter" }, 
+                    "XV50 (2011-2017)": { colors: ["Черный", "Белый", "Серый"], image: "https://placehold.co/600x400/2C2C2C/E0E0E0?text=Toyota+Camry+XV50&font=inter" }
+                },
+                "RAV4": {
+                    "XA50 (2018-н.в.)": { colors: ["Красный", "Синий", "Белый", "Черный"], image: "https://placehold.co/600x400/00A2FF/0D0D0D?text=Toyota+RAV4+XA50&font=inter" }, 
+                    "XA40 (2012-2018)": { colors: ["Белый", "Серый", "Коричневый"], image: "https://placehold.co/600x400/2C2C2C/E0E0E0?text=Toyota+RAV4+XA40&font=inter" }
                 }
-            });
+            },
+            "BMW": {
+                "3 серия": {
+                    "G20 (2018-н.в.)": { colors: ["Черный", "Белый", "Синий металлик"], image: "https://placehold.co/600x400/00A2FF/0D0D0D?text=BMW+3+G20&font=inter" },
+                    "F30 (2011-2019)": { colors: ["Белый", "Серый", "Красный"], image: "https://placehold.co/600x400/2C2C2C/E0E0E0?text=BMW+3+F30&font=inter" }
+                },
+                "X5": {
+                    "G05 (2018-н.в.)": { colors: ["Черный сапфир", "Белый минерал", "Синий фитоник"], image: "https://placehold.co/600x400/00A2FF/0D0D0D?text=BMW+X5+G05&font=inter" }
+                }
+            }
+        };
+
+
+        // --- Функции для отображения секций ---
+        function hideAllSections() {
+            mainPageTitle.style.display = 'none';
+            categoriesSection.style.display = 'none';
+            listingsSection.style.display = 'none';
+            buyRequestSection.style.display = 'none';
+            sellFormSection.style.display = 'none';
+            profileSection.style.display = 'none';
         }
 
-        // Установка активного элемента в нижней навигации (пример)
-        // В реальном приложении это будет зависеть от текущей страницы
-        const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
-        bottomNavItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                // e.preventDefault(); // Если это ссылки на другие страницы, то не нужно
-                bottomNavItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                // Здесь будет логика перехода на соответствующую страницу/раздел
+        function showMainContent() {
+            hideAllSections();
+            mainPageTitle.style.display = 'block';
+            categoriesSection.style.display = 'block';
+            listingsSection.style.display = 'block';
+            updateNoListingsMessage();
+        }
+
+        function showBuyRequestForm() {
+            hideAllSections();
+            buyRequestSection.style.display = 'block';
+            populateMakes(); 
+        }
+
+        function showSellForm() {
+            hideAllSections();
+            sellFormSection.style.display = 'block';
+        }
+
+        function showProfileSection() {
+            hideAllSections();
+            profileSection.style.display = 'block';
+        }
+        
+        function showToast(message) {
+            toastNotification.textContent = message;
+            toastNotification.classList.add('show');
+            setTimeout(() => {
+                toastNotification.classList.remove('show');
+            }, 3000);
+        }
+
+        if (mobileMenuButton && sideMenu && closeSideMenuButton && sideMenuOverlay) {
+            mobileMenuButton.addEventListener('click', () => sideMenu.classList.remove('-translate-x-full'));
+            closeSideMenuButton.addEventListener('click', () => sideMenu.classList.add('-translate-x-full'));
+            sideMenuOverlay.addEventListener('click', () => sideMenu.classList.add('-translate-x-full'));
+            document.querySelectorAll('#side-menu nav a').forEach(link => {
+                link.addEventListener('click', () => sideMenu.classList.add('-translate-x-full'));
             });
+        }
+        document.getElementById('menu-buy-link')?.addEventListener('click', (e) => { e.preventDefault(); showBuyRequestForm(); setActiveBottomNav(navBuyRequest); });
+        document.getElementById('menu-sell-link')?.addEventListener('click', (e) => { e.preventDefault(); showSellForm(); setActiveBottomNav(navSell); });
+        
+        if (searchIconButton && searchModal && closeSearchModalButton) {
+            searchIconButton.addEventListener('click', () => searchModal.classList.remove('hidden'));
+            closeSearchModalButton.addEventListener('click', () => searchModal.classList.add('hidden'));
+            searchModal.addEventListener('click', (event) => {
+                if (event.target === searchModal) searchModal.classList.add('hidden');
+            });
+            searchSubmitModal?.addEventListener('click', () => {
+                const query = searchInputModal.value;
+                console.log('Поисковый запрос:', query);
+                showToast(`Поиск по запросу: "${query}"`);
+                searchModal.classList.add('hidden');
+                showMainContent();
+                setActiveBottomNav(navHome);
+            });
+        }
+        
+        function setActiveBottomNav(selectedItem) {
+            bottomNavItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            if (selectedItem) {
+                 selectedItem.classList.add('active');
+            }
+        }
+
+        logoLink?.addEventListener('click', (e) => { e.preventDefault(); showMainContent(); setActiveBottomNav(navHome);});
+        navHome?.addEventListener('click', (e) => { e.preventDefault(); showMainContent(); setActiveBottomNav(navHome); });
+        navBuyRequest?.addEventListener('click', (e) => { e.preventDefault(); showBuyRequestForm(); setActiveBottomNav(navBuyRequest); });
+        navSell?.addEventListener('click', (e) => { e.preventDefault(); showSellForm(); setActiveBottomNav(navSell); });
+        navProfile?.addEventListener('click', (e) => { e.preventDefault(); showProfileSection(); setActiveBottomNav(navProfile);});
+        
+        saveProfileButton?.addEventListener('click', () => {
+            const name = document.getElementById('profile-name').value;
+            const username = document.getElementById('profile-username').value;
+            const phone = document.getElementById('profile-phone').value;
+            console.log("Сохранение профиля:", { name, username, phone });
+            showToast("Профиль сохранен (в консоль)!");
+        });
+
+        function populateMakes() {
+            buyMakeSelect.innerHTML = '<option value="">Выберите марку</option>'; 
+            for (const make in carData) {
+                const option = document.createElement('option');
+                option.value = make;
+                option.textContent = make;
+                buyMakeSelect.appendChild(option);
+            }
+            buyModelSelect.innerHTML = '<option value="">Выберите модель</option>';
+            buyModelSelect.disabled = true;
+            buyGenerationSelect.innerHTML = '<option value="">Выберите поколение</option>';
+            buyGenerationSelect.disabled = true;
+            buyColorOptions.innerHTML = '<span class="text-xs text-brand-text-secondary">Выберите поколение</span>';
+            carImagePreview.innerHTML = '<span class="text-brand-text-secondary">[Изображение автомобиля появится здесь]</span>';
+        }
+
+        buyMakeSelect?.addEventListener('change', function() {
+            const selectedMake = this.value;
+            buyModelSelect.innerHTML = '<option value="">Выберите модель</option>';
+            buyGenerationSelect.innerHTML = '<option value="">Выберите поколение</option>';
+            buyGenerationSelect.disabled = true;
+            buyColorOptions.innerHTML = '<span class="text-xs text-brand-text-secondary">Выберите поколение</span>';
+            carImagePreview.innerHTML = '<span class="text-brand-text-secondary">[Изображение автомобиля появится здесь]</span>';
+
+            if (selectedMake && carData[selectedMake]) {
+                buyModelSelect.disabled = false;
+                for (const model in carData[selectedMake]) {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    buyModelSelect.appendChild(option);
+                }
+            } else {
+                buyModelSelect.disabled = true;
+            }
+        });
+
+        buyModelSelect?.addEventListener('change', function() {
+            const selectedMake = buyMakeSelect.value;
+            const selectedModel = this.value;
+            buyGenerationSelect.innerHTML = '<option value="">Выберите поколение</option>';
+            buyColorOptions.innerHTML = '<span class="text-xs text-brand-text-secondary">Выберите поколение</span>';
+            carImagePreview.innerHTML = '<span class="text-brand-text-secondary">[Изображение автомобиля появится здесь]</span>';
+
+            if (selectedMake && selectedModel && carData[selectedMake] && carData[selectedMake][selectedModel]) {
+                buyGenerationSelect.disabled = false;
+                for (const generation in carData[selectedMake][selectedModel]) {
+                    const option = document.createElement('option');
+                    option.value = generation;
+                    option.textContent = generation;
+                    buyGenerationSelect.appendChild(option);
+                }
+            } else {
+                buyGenerationSelect.disabled = true;
+            }
+        });
+        
+        buyGenerationSelect?.addEventListener('change', function() {
+            const selectedMake = buyMakeSelect.value;
+            const selectedModel = buyModelSelect.value;
+            const selectedGeneration = this.value;
+            buyColorOptions.innerHTML = ''; 
+
+            if (selectedMake && selectedModel && selectedGeneration && carData[selectedMake]?.[selectedModel]?.[selectedGeneration]) {
+                const generationData = carData[selectedMake][selectedModel][selectedGeneration];
+                carImagePreview.innerHTML = `<img src="${generationData.image}" alt="${selectedMake} ${selectedModel} ${selectedGeneration}" class="rounded-md">`;
+                if (generationData.colors && generationData.colors.length > 0) {
+                    generationData.colors.forEach((color, index) => {
+                        const colorId = `color-${index}`;
+                        const wrapper = document.createElement('div');
+                        wrapper.className = "inline-flex items-center";
+                        const input = document.createElement('input');
+                        input.type = "checkbox"; 
+                        input.id = colorId;
+                        input.name = "buy-color";
+                        input.value = color;
+                        input.className = "form-checkbox h-4 w-4 text-brand-accent-blue border-brand-border-medium rounded focus:ring-brand-accent-blue bg-brand-bg-input";
+                        const label = document.createElement('label');
+                        label.htmlFor = colorId;
+                        label.className = "ml-2 text-sm text-brand-text-primary cursor-pointer";
+                        label.textContent = color;
+                        wrapper.appendChild(input);
+                        wrapper.appendChild(label);
+                        buyColorOptions.appendChild(wrapper);
+                    });
+                } else {
+                    buyColorOptions.innerHTML = '<span class="text-xs text-brand-text-secondary">Цвета не указаны</span>';
+                }
+
+            } else {
+                carImagePreview.innerHTML = '<span class="text-brand-text-secondary">[Изображение автомобиля появится здесь]</span>';
+                buyColorOptions.innerHTML = '<span class="text-xs text-brand-text-secondary">Выберите поколение</span>';
+            }
+        });
+
+
+        buyRequestForm?.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const make = buyMakeSelect.value;
+            const model = buyModelSelect.value;
+            const generation = buyGenerationSelect.value;
+            const selectedColors = Array.from(buyRequestForm.querySelectorAll('input[name="buy-color"]:checked')).map(cb => cb.value);
+            const description = event.target['buy-description'].value;
+            const contact = event.target['buy-contact'].value;
+            
+            let message = `Новая заявка на покупку:\nМарка: ${make}\nМодель: ${model}\nПоколение: ${generation}\n`;
+            if (selectedColors.length > 0) {
+                message += `Цвет(а): ${selectedColors.join(', ')}\n`;
+            }
+            if (description) {
+                message += `Пожелания: ${description}\n`;
+            }
+            message += `Контакт: ${contact}`;
+
+            console.log(message);
+            showToast('Заявка на покупку отправлена (в консоль)!');
+            buyRequestForm.reset();
+            populateMakes(); 
+        });
+
+        function updateNoListingsMessage() {
+            const listingsExist = listingsContainer.children.length > 0 && 
+                                  Array.from(listingsContainer.children).some(child => child.classList.contains('card'));
+            if (!listingsExist) {
+                noListingsMessage.style.display = 'block';
+                viewAllListingsButtonContainer.style.display = 'none';
+            } else {
+                noListingsMessage.style.display = 'none';
+                viewAllListingsButtonContainer.style.display = 'block';
+            }
+        }
+        
+        sellItemForm?.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const item = {
+                type: formData.get('type'),
+                make: formData.get('make'),
+                model: formData.get('model'),
+                year: formData.get('year'),
+                price: formData.get('price'),
+                description: formData.get('description'),
+                image: formData.get('image') || `https://placehold.co/600x400/${formData.get('type') === 'auto' ? '00A2FF' : '0080CC'}/0D0D0D?text=${encodeURIComponent(formData.get('make'))}+${encodeURIComponent(formData.get('model'))}&font=inter`
+            };
+
+            addListingToBoard(item);
+            showToast('Объявление успешно размещено!');
+            sellItemForm.reset();
+            showMainContent(); 
+            setActiveBottomNav(navHome);
+        });
+
+        function addListingToBoard(item) {
+            const card = document.createElement('div');
+            card.className = 'card'; 
+            
+            let priceColorClass = 'text-brand-accent-blue'; 
+
+            card.innerHTML = `
+                <a href="#" class="block">
+                    <img src="${item.image}" alt="[Изображение ${item.make} ${item.model}]" class="w-full h-48 object-cover rounded-t-lg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/2C2C2C/A0A0A0?text=Image+Not+Found&font=inter';">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold font-heading text-brand-text-primary mb-1 truncate">${item.make} ${item.model} ${item.year || ''}</h3>
+                        <p class="${priceColorClass} font-bold text-xl mb-1.5">${Number(item.price).toLocaleString('ru-RU')} ₽</p>
+                        <p class="text-sm text-brand-text-secondary truncate mb-1">${item.description.substring(0,50)}${item.description.length > 50 ? '...' : ''}</p>
+                        <p class="text-xs text-brand-text-secondary opacity-75 truncate">Только что</p>
+                    </div>
+                </a>
+            `;
+            if (listingsContainer.firstChild && listingsContainer.firstChild.id !== 'no-listings-message') {
+                listingsContainer.insertBefore(card, listingsContainer.firstChild);
+            } else {
+                if(noListingsMessage.parentNode === listingsContainer) {
+                    listingsContainer.removeChild(noListingsMessage);
+                }
+                listingsContainer.appendChild(card);
+            }
+            if (noListingsMessage.parentNode === listingsContainer && listingsContainer.children.length > 1) {
+                 listingsContainer.removeChild(noListingsMessage);
+            }
+            updateNoListingsMessage();
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            showMainContent(); 
+            updateNoListingsMessage(); 
         });
 
     </script>
